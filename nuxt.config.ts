@@ -1,0 +1,58 @@
+export default defineNuxtConfig({
+  compatibilityDate: '2025-07-15',
+  app: {
+    head: {
+      script: [
+        {
+          innerHTML: `(function(){if(typeof document==='undefined')return;var t=localStorage.getItem('semanur-tufan-theme')||'dark';var isLight=t==='light';var el=document.documentElement;el.style.backgroundColor=isLight?'#FFFFFF':'#0D1421';el.setAttribute('data-initial-theme',t);})();`,
+          tagPriority: 100,
+        },
+      ],
+    },
+  },
+  runtimeConfig: {
+    public: {
+      firebaseApiKey: process.env.FIREBASE_API_KEY,
+      supabaseUrl: process.env.SUPABASE_URL,
+      supabaseKey: process.env.SUPABASE_KEY,
+      adminEmail: process.env.ADMIN_EMAIL || 'semanurtopal3@gmail.com',
+    },
+  },
+  modules: [
+    'vuetify-nuxt-module',
+    '@pinia/nuxt',
+    'pinia-plugin-persistedstate/nuxt',
+    'nuxt-lodash'
+  ],
+  devServer: {
+    host: "0.0.0.0",
+    port: 5000,
+  },
+  vuetify: {
+    vuetifyOptions: {
+      theme: {
+        defaultTheme: "light",
+        themes: {
+          dark: {
+            dark: true,
+            colors: {
+              background: "#212121",
+              surface: "#212121",
+              primary: "#69F0AE",
+              secondary: "#D1D1D1"
+            },
+          },
+          light: {
+            dark: false,
+            colors: {
+              background: "#FFFFFF",
+              surface: "#FFFFFF",
+              primary: "#3156FA",
+              secondary: "#424242"
+            },
+          },
+        },
+      },
+    },
+  },
+})
