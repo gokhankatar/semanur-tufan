@@ -7,23 +7,20 @@
     @update:model-value="emit('update:modelValue', $event)"
   >
     <v-card>
-      <div class="auth-dialog__header">
-        <div class="auth-dialog__header-text">
-          <p class="text-subtitle-2 text-sm-subtitle-1 text-lg-h5">Hoş geldiniz</p>
-          <p class="text-caption text-lg-subtitle-2">
-            Hesabınıza giriş yapın veya yeni hesap oluşturun
-          </p>
+      <div class="d-flex justify-space-between align-start">
+        <div class="auth-dialog__header-text d-flex flex-column align-start pa-5">
+          <p class="auth-dialog__title mb-1">Hoş geldiniz</p>
+          <p class="auth-dialog__subtitle text-body-small ma-0">Hesabınıza giriş yapın veya yeni hesap oluşturun</p>
         </div>
+
         <v-btn
-          icon
           variant="text"
           size="small"
           class="auth-dialog__close"
           aria-label="Kapat"
           @click="close"
-        >
-          <v-icon>mdi-close</v-icon>
-        </v-btn>
+          icon="mdi-close"
+        />
       </div>
 
       <v-tabs v-model="tab" grow>
@@ -66,11 +63,11 @@
                 prepend-icon="mdi-login"
                 color="primary"
                 block
+                :elevation="0"
                 class="mt-4"
                 :loading="loading"
-              >
-                Giriş yap
-              </v-btn>
+                text="Giriş yap"
+              />
             </v-form>
           </v-card-text>
         </v-window-item>
@@ -137,9 +134,8 @@
                 block
                 class="mt-4"
                 :loading="regLoading"
-              >
-                Kayıt ol
-              </v-btn>
+                text="Kayıt ol"
+              />
             </v-form>
           </v-card-text>
         </v-window-item>
@@ -245,34 +241,14 @@ const handleRegister = async () => {
 </script>
 
 <style scoped>
-.auth-dialog__header {
-  display: flex;
-  align-items: flex-start;
-  justify-content: space-between;
-  gap: 1rem;
-  padding: 1.25rem 1.5rem 0.5rem;
-}
-
-.auth-dialog__header-text {
-  flex: 1;
-}
-
-.auth-dialog__title {
+.auth-dialog__header-text .auth-dialog__title {
   font-size: 1.25rem;
   font-weight: 700;
-  color: rgb(var(--v-theme-on-surface));
-  margin: 0 0 0.25rem 0;
-  letter-spacing: -0.02em;
-}
-
-.auth-dialog__subtitle {
-  font-size: 0.875rem;
-  color: rgb(var(--v-theme-on-surface-variant, 163 163 163));
   margin: 0;
-  line-height: 1.4;
 }
 
-.auth-dialog__close {
-  flex-shrink: 0;
+.auth-dialog__header-text .auth-dialog__subtitle {
+  font-size: 0.875rem;
+  line-height: 1.4;
 }
 </style>

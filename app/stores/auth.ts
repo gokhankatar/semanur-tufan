@@ -1,6 +1,19 @@
+export interface AuthUser {
+  email: string
+  uid: string
+  lastSignInTime?: string
+}
+
+export interface UserProfile {
+  avatar_url?: string
+  name?: string
+  surname?: string
+}
+
 export const useAuthStore = defineStore('auth', {
   state: () => ({
-    user: null as { email: string; uid: string } | null,
+    user: null as AuthUser | null,
+    userProfile: null as UserProfile | null,
     loading: true,
   }),
   getters: {
@@ -12,12 +25,14 @@ export const useAuthStore = defineStore('auth', {
     isLoggedIn: (state) => !!state.user,
   },
   actions: {
-    setUser(user: { email: string; uid: string } | null) {
+    setUser(user: AuthUser | null) {
       this.user = user
+    },
+    setUserProfile(profile: UserProfile | null) {
+      this.userProfile = profile
     },
     setLoading(loading: boolean) {
       this.loading = loading
     },
   },
-  // Firebase auth state ile senkron - persist gerekmez
 })

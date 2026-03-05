@@ -5,30 +5,28 @@
     </div>
 
     <template v-else-if="journal">
-      <div class="d-flex flex-wrap align-center justify-space-between gap-4 mb-6">
+      <div class="d-flex flex-wrap align-center justify-space-between ga-4 mb-6">
         <div>
-          <h1 class="text-h4 mb-1">{{ journal.journal_title }}</h1>
-          <p class="text-body2 text-medium-emphasis">
+          <h1 class="text-headline-large mb-1">{{ journal.journal_title }}</h1>
+          <p class="text-body-medium text-medium-emphasis">
             {{ journal.publisher_name }} · Sayı {{ journal.journal_volume_number }}
           </p>
         </div>
-        <div class="d-flex gap-2">
+        <div class="d-flex ga-2">
           <v-btn
             variant="tonal"
             prepend-icon="mdi-download"
             :href="pdfDisplayUrl"
             target="_blank"
             download
-          >
-            İndir
-          </v-btn>
+            text="İndir"
+          />
           <v-btn
             variant="tonal"
             prepend-icon="mdi-share-variant"
             @click="shareJournal"
-          >
-            Paylaş
-          </v-btn>
+            text="Paylaş"
+          />
         </div>
       </div>
 
@@ -49,119 +47,123 @@
             </template>
           </ClientOnly>
         </div>
-        <div class="pdf-controls pa-4 d-flex align-center justify-space-between flex-wrap gap-2">
+        <div
+          class="pdf-controls pa-4 d-flex align-center justify-space-between flex-wrap ga-2"
+        >
           <v-btn
-            icon
+            icon="mdi-chevron-left"
             variant="text"
             :disabled="currentPage <= 1"
             @click="goToPage(currentPage - 1)"
-          >
-            <v-icon>mdi-chevron-left</v-icon>
-          </v-btn>
-          <span class="text-body2">
-            Sayfa {{ currentPage }} / {{ pageCount || '...' }}
+          />
+
+          <span class="text-body-medium">
+            Sayfa {{ currentPage }} / {{ pageCount || "..." }}
           </span>
+
           <v-btn
-            icon
+            icon="mdi-chevron-right"
             variant="text"
             :disabled="currentPage >= (pageCount || 1)"
             @click="goToPage(currentPage + 1)"
-          >
-            <v-icon>mdi-chevron-right</v-icon>
-          </v-btn>
+          />
         </div>
       </v-card>
     </template>
 
-    <v-alert v-else type="error" class="ma-4">
-      Dergi bulunamadı.
-    </v-alert>
+    <v-alert v-else type="error" class="ma-4"> Dergi bulunamadı. </v-alert>
   </div>
 </template>
 
 <script setup lang="ts">
-import VuePdfEmbed from 'vue-pdf-embed'
-import type { Journal } from '~/interfaces'
+import type { Journal } from "~/interfaces";
 
-const route = useRoute()
-const { fetchJournalById } = useJournals()
-const { playPageTurnSound } = usePageTurnSound()
+// pdf.js document kullanıyor - sunucuda yüklenmemesi için sadece client'ta lazy import
+const VuePdfEmbed = defineAsyncComponent(() => import("vue-pdf-embed"));
 
-const journal = ref<Journal | null>(null)
-const loading = ref(true)
-const currentPage = ref(1)
-const pageCount = ref<number | null>(null)
-const isFlipping = ref(false)
+definePageMeta({ ssr: false });
+
+const route = useRoute();
+const { fetchJournalById } = useJournals();
+const { playPageTurnSound } = usePageTurnSound();
+
+const journal = ref<Journal | null>(null);
+const loading = ref(true);
+const currentPage = ref(1);
+const pageCount = ref<number | null>(null);
+const isFlipping = ref(false);
 
 const goToPage = (page: number) => {
-  const max = pageCount.value || 1
-  const next = Math.max(1, Math.min(max, page))
+  const max = pageCount.value || 1;
+  const next = Math.max(1, Math.min(max, page));
   if (next !== currentPage.value) {
-    isFlipping.value = true
-    playPageTurnSound()
-    currentPage.value = next
-    setTimeout(() => { isFlipping.value = false }, 400)
+    isFlipping.value = true;
+    playPageTurnSound();
+    currentPage.value = next;
+    setTimeout(() => {
+      isFlipping.value = false;
+    }, 400);
   }
-}
+};
 
 const pdfDisplayUrl = computed(() => {
-  const url = journal.value?.pdf_url || ''
-  if (!url) return ''
-  if (url.startsWith('file://')) {
-    return ''
+  const url = journal.value?.pdf_url || "";
+  if (!url) return "";
+  if (url.startsWith("file://")) {
+    return "";
   }
-  if (url.startsWith('/')) {
-    return url
+  if (url.startsWith("/")) {
+    return url;
   }
-  return url
-})
+  return url;
+});
 
 onMounted(async () => {
-  const id = route.params.id as string
+  const id = route.params.id as string;
   try {
-    journal.value = await fetchJournalById(id)
+    journal.value = await fetchJournalById(id);
     if (journal.value && !pdfDisplayUrl.value) {
-      console.warn('PDF URL geçersiz (file:// yolları tarayıcıda çalışmaz)')
+      console.warn("PDF URL geçersiz (file:// yolları tarayıcıda çalışmaz)");
     }
   } catch (e) {
-    console.error(e)
+    console.error(e);
   } finally {
-    loading.value = false
+    loading.value = false;
   }
 
   const keyHandler = (e: KeyboardEvent) => {
-    if (!journal.value) return
-    if (e.key === 'ArrowLeft') goToPage(currentPage.value - 1)
-    else if (e.key === 'ArrowRight') goToPage(currentPage.value + 1)
-  }
-  window.addEventListener('keydown', keyHandler)
-  onUnmounted(() => window.removeEventListener('keydown', keyHandler))
-})
+    if (!journal.value) return;
+    if (e.key === "ArrowLeft") goToPage(currentPage.value - 1);
+    else if (e.key === "ArrowRight") goToPage(currentPage.value + 1);
+  };
+  window.addEventListener("keydown", keyHandler);
+  onUnmounted(() => window.removeEventListener("keydown", keyHandler));
+});
 
 const shareJournal = async () => {
-  if (!journal.value) return
-  const url = window.location.href
-  const title = journal.value.journal_title
+  if (!journal.value) return;
+  const url = window.location.href;
+  const title = journal.value.journal_title;
   if (navigator.share) {
     try {
       await navigator.share({
         title,
         url,
         text: journal.value.journal_summary,
-      })
+      });
     } catch (e) {
-      if ((e as Error).name !== 'AbortError') {
-        await copyToClipboard(url)
+      if ((e as Error).name !== "AbortError") {
+        await copyToClipboard(url);
       }
     }
   } else {
-    await copyToClipboard(url)
+    await copyToClipboard(url);
   }
-}
+};
 
 const copyToClipboard = async (text: string) => {
-  await navigator.clipboard.writeText(text)
-}
+  await navigator.clipboard.writeText(text);
+};
 </script>
 
 <style scoped>

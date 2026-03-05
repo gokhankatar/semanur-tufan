@@ -1,10 +1,9 @@
-<template>
-  <div class="pa-4 pa-md-8">
+<template>  
     <section class="hero mb-12">
       <h1 class="text-h3 text-md-h2 font-weight-bold mb-2">
         Semanur Tufan
       </h1>
-      <p class="text-h6 text-medium-emphasis">
+      <p class="text-title-large text-medium-emphasis">
         Kişisel dergi ve yazılar
       </p>
     </section>
@@ -16,14 +15,13 @@
       </div>
       <div v-else-if="journals.length === 0" class="text-center py-12">
         <v-icon size="64" color="grey">mdi-book-open-variant</v-icon>
-        <p class="text-body1 mt-4 text-medium-emphasis">Henüz dergi yok</p>
+        <p class="text-body-large mt-4 text-medium-emphasis">Henüz dergi yok</p>
       </div>
       <v-row v-else>
         <v-col
           v-for="journal in journals"
           :key="journal.id"
-          cols="12"
-          sm="6"
+          cols="6"
           md="4"
           lg="3"
         >
@@ -31,7 +29,6 @@
         </v-col>
       </v-row>
     </section>
-  </div>
 </template>
 
 <script setup lang="ts">

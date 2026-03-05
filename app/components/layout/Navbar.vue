@@ -31,14 +31,6 @@
             <v-icon icon="mdi-briefcase" size="small" />
             <span>Çalışmalar</span>
           </NuxtLink>
-          <NuxtLink
-            v-if="authStore.isAdmin"
-            to="/admin/dergi-yukle"
-            class="navbar__nav-link navbar__nav-link--admin"
-          >
-            <v-icon icon="mdi-upload" size="small" />
-            <span>Dergi Yükle</span>
-          </NuxtLink>
         </div>
       </nav>
 
@@ -60,9 +52,7 @@
             :title="isDark ? 'Açık tema' : 'Koyu tema'"
             @click="toggleTheme"
           />
-
           <v-btn
-            v-if="!authStore.isLoggedIn"
             to="/abone-ol"
             variant="flat"
             rounded="pill"
@@ -71,26 +61,6 @@
             class="abone-btn"
           >
             Abone ol
-          </v-btn>
-
-          <v-btn
-            v-if="!authStore.isLoggedIn"
-            variant="flat"
-            color="primary"
-            :ripple="false"
-            prepend-icon="mdi-account"
-            @click="authDialogOpen = true"
-          >
-            Giriş yap / Kayıt ol
-          </v-btn>
-          <v-btn
-            v-else
-            variant="text"
-            :ripple="false"
-            prepend-icon="mdi-account"
-            @click="handleLogout"
-          >
-            Çıkış
           </v-btn>
         </template>
       </div>
@@ -154,56 +124,20 @@
                 <v-icon icon="mdi-briefcase" size="large" />
                 <span>Çalışmalar</span>
               </NuxtLink>
-              <NuxtLink
-                v-if="authStore.isAdmin"
-                to="/admin/dergi-yukle"
-                class="mobile-menu__link mobile-menu__link--admin"
-                @click="mobileMenuOpen = false"
-              >
-                <v-icon icon="mdi-upload" size="large" />
-                <span>Dergi Yükle</span>
-              </NuxtLink>
             </nav>
 
             <div class="mobile-menu__actions">
               <v-btn
-                v-if="!authStore.isLoggedIn"
                 to="/abone-ol"
                 variant="flat"
                 rounded="pill"
                 :ripple="false"
                 prepend-icon="mdi-email-newsletter"
                 class="abone-btn"
+                block
                 @click="mobileMenuOpen = false"
               >
                 Abone ol
-              </v-btn>
-              <v-btn
-                v-if="!authStore.isLoggedIn"
-                variant="flat"
-                color="primary"
-                :ripple="false"
-                prepend-icon="mdi-account"
-                @click="
-                  authDialogOpen = true;
-                  mobileMenuOpen = false;
-                "
-              >
-                Giriş yap
-              </v-btn>
-              <v-btn
-                v-else
-                variant="text"
-                :ripple="false"
-                prepend-icon="mdi-account"
-                @click="
-                  () => {
-                    mobileMenuOpen = false;
-                    handleLogout();
-                  }
-                "
-              >
-                Çıkış
               </v-btn>
             </div>
           </div>
@@ -211,28 +145,19 @@
       </Transition>
     </Teleport>
 
-    <CommonAuthDialog v-model="authDialogOpen" />
   </header>
 </template>
 
 <script setup lang="ts">
 const display = useDisplay();
 const route = useRoute();
-const authStore = useAuthStore();
 const theme = useTheme();
-const authDialogOpen = ref(false);
 const mobileMenuOpen = ref(false);
 
 const isDark = computed(() => theme.global.current.value.dark);
 
 const toggleTheme = () => {
   theme.toggle();
-};
-
-const handleLogout = async () => {
-  const { $authActions } = useNuxtApp();
-  await $authActions.signOut();
-  await navigateTo("/");
 };
 
 // Body scroll lock when mobile menu is open
@@ -354,20 +279,40 @@ onBeforeUnmount(() => {
 }
 
 .abone-btn {
-  background: linear-gradient(135deg, #69f0ae 0%, #4ade80 50%, #22c55e 100%) !important;
+  background: linear-gradient(
+    135deg,
+    #69f0ae 0%,
+    #4ade80 25%,
+    #22c55e 50%,
+    #4ade80 75%,
+    #69f0ae 100%
+  ) !important;
+  background-size: 200% 200% !important;
   color: #0d1421 !important;
   font-weight: 600;
   box-shadow: 0 4px 15px rgba(105, 240, 174, 0.4);
   transition: transform 0.2s, box-shadow 0.2s;
+  animation: gradient-shift 3s ease infinite;
 }
 
 .abone-btn:hover {
-  transform: translateY(-2px);
+  transform: translateY(-2px) scale(1.02);
   box-shadow: 0 6px 24px rgba(105, 240, 174, 0.5);
+  animation-duration: 2s;
 }
 
 .abone-btn :deep(.v-btn__content) {
   color: inherit;
+}
+
+@keyframes gradient-shift {
+  0%,
+  100% {
+    background-position: 0% 50%;
+  }
+  50% {
+    background-position: 100% 50%;
+  }
 }
 
 .navbar__menu-btn {
