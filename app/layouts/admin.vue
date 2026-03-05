@@ -70,7 +70,7 @@
         >
           <div class="admin-drawer__header pa-4">
             <NuxtLink to="/" class="admin-drawer__logo">
-              <span>Semanur Tufan</span>
+              <span>Gökgerdan Dergisi</span>
               <span class="text-body-small">Admin</span>
             </NuxtLink>
           </div>

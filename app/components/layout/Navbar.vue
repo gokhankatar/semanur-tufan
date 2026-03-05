@@ -2,7 +2,7 @@
   <header class="navbar" :class="{ 'navbar--scrolled': isScrolled }">
     <div class="navbar__inner">
       <NuxtLink to="/" class="navbar__logo">
-        <span class="navbar__logo-text">Semanur Tufan</span>
+        <span class="navbar__logo-text">Gökgerdan Dergisi</span>
       </NuxtLink>
 
       <nav v-if="!display.mdAndDown.value" class="navbar__center">

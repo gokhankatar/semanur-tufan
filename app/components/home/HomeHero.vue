@@ -18,9 +18,10 @@
     <div class="home-hero__content">
       <h1 ref="titleRef" class="home-hero__title">
         <span class="home-hero__title-text">
-          <span v-for="(char, i) in titleChars" :key="i" class="home-hero__char">{{
-            char
-          }}</span>
+          <span v-for="(char, i) in titleChars1" :key="'1-' + i" class="home-hero__char">{{ char }}</span>
+        </span>
+        <span class="home-hero__title-text">
+          <span v-for="(char, i) in titleChars2" :key="'2-' + i" class="home-hero__char">{{ char }}</span>
         </span>
       </h1>
       <p class="home-hero__subtitle">Dergi yazarlığı · Blog · Sanatsal çalışmalar</p>
@@ -77,7 +78,8 @@ import { animate, stagger } from "animejs";
 const display = useDisplay();
 const config = useRuntimeConfig();
 const titleRef = ref<HTMLElement | null>(null);
-const titleChars = "Semanur Tufan".split("");
+const titleChars1 = "Gökgerdan".split("");
+const titleChars2 = "Dergisi".split("");
 
 onMounted(() => {
   if (!titleRef.value) return;
@@ -315,8 +317,12 @@ onMounted(() => {
   font-size: clamp(2.75rem, 9vw, 5rem);
   font-weight: 800;
   letter-spacing: -0.04em;
-  line-height: 1.05;
+  line-height: 1.15;
   margin: 0 0 0.75rem 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.1em;
 }
 
 .home-hero__title-text {
