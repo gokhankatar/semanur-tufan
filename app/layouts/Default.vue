@@ -4,7 +4,7 @@
     <CommonInitial_Loading v-if="isLoading" />
     <template v-else>
       <LayoutNavbar />
-      <main class="main-content">
+      <main class="main-content" :class="{ 'main-content--home': route.path === '/' }">
         <NuxtPage />
       </main>
 
@@ -46,6 +46,10 @@ onMounted(() => {
   padding-top: 65px;
   min-height: 100vh;
   background: rgb(var(--v-theme-background, 13 20 33));
+}
+
+.main-content--home {
+  padding-top: 0;
 }
 
 .v-theme--light .main-content {

@@ -20,6 +20,7 @@ export const PRESET_COLORS = [
 
 export function useThemeColor() {
   const theme = useTheme()
+  const { fetchPrimaryColors, savePrimaryColors } = useSiteSettings()
 
   const getStoredPrimary = (): { dark: string; light: string } => {
     if (import.meta.server) return DEFAULT_PRIMARY
@@ -36,26 +37,59 @@ export function useThemeColor() {
     }
   }
 
+  const hexToRgb = (hex: string): string => {
+    const result = /^#?([a-f\d]{2})([a-f\d]{2})([a-f\d]{2})$/i.exec(hex)
+    if (!result) return '105 240 174'
+    return `${parseInt(result[1], 16)} ${parseInt(result[2], 16)} ${parseInt(result[3], 16)}`
+  }
+
   const applyPrimary = (color: string) => {
     const current = theme.global.current.value
     if (current?.colors) (current.colors as Record<string, string>).primary = color
+    if (import.meta.client && typeof document !== 'undefined') {
+      document.documentElement.style.setProperty('--v-theme-primary', hexToRgb(color))
+    }
   }
 
-  const setPrimaryForTheme = (themeName: 'dark' | 'light', color: string) => {
+  const applyBothThemes = (dark: string, light: string) => {
+    try {
+      const themes = theme.themes as { value?: Record<string, { colors?: Record<string, string> }> } | undefined
+      if (themes?.value?.dark?.colors) themes.value.dark.colors.primary = dark
+      if (themes?.value?.light?.colors) themes.value.light.colors.primary = light
+    } catch {
+      // themes might not be exposed
+    }
+    const name = theme.global.name.value
+    applyPrimary(name === 'dark' ? dark : light)
+  }
+
+  const setPrimaryForTheme = async (themeName: 'dark' | 'light', color: string) => {
     if (import.meta.server) return
     const stored = getStoredPrimary()
     stored[themeName] = color
     localStorage.setItem(PRIMARY_KEY, JSON.stringify(stored))
-    const name = theme.global.name.value
-    if (name === themeName) applyPrimary(color)
+    applyBothThemes(stored.dark, stored.light)
+    try {
+      await savePrimaryColors(stored.dark, stored.light)
+    } catch {
+      // Firebase save failed, localStorage still updated
+    }
   }
 
-  const loadStoredPrimary = () => {
+  const loadStoredPrimary = async () => {
     if (import.meta.server) return
+    try {
+      const fromFirebase = await fetchPrimaryColors()
+      if (fromFirebase) {
+        localStorage.setItem(PRIMARY_KEY, JSON.stringify(fromFirebase))
+        applyBothThemes(fromFirebase.dark, fromFirebase.light)
+        return
+      }
+    } catch {
+      // Fall through to localStorage / nuxt.config defaults
+    }
     const stored = getStoredPrimary()
-    const name = theme.global.name.value
-    const color = name === 'dark' ? stored.dark : stored.light
-    applyPrimary(color)
+    applyBothThemes(stored.dark, stored.light)
   }
 
   const currentPrimary = computed(() => {

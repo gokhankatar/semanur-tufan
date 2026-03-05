@@ -1,5 +1,5 @@
 <template>
-  <header class="navbar">
+  <header class="navbar" :class="{ 'navbar--scrolled': isScrolled }">
     <div class="navbar__inner">
       <NuxtLink to="/" class="navbar__logo">
         <span class="navbar__logo-text">Semanur Tufan</span>
@@ -16,9 +16,9 @@
             <span>Anasayfa</span>
           </NuxtLink>
           <NuxtLink
-            to="/blogs"
+            to="/bloglar"
             class="navbar__nav-link"
-            :class="{ 'navbar__nav-link--active': route.path === '/blogs' }"
+            :class="{ 'navbar__nav-link--active': route.path === '/bloglar' }"
           >
             <v-icon icon="mdi-post" size="small" />
             <span>Bloglar</span>
@@ -35,6 +35,16 @@
       </nav>
 
       <div class="navbar__actions d-flex align-center ga-2">
+        <v-btn
+          v-if="display.mdAndDown.value"
+          :icon="isDark ? 'mdi-weather-sunny' : 'mdi-weather-night'"
+          variant="text"
+          :ripple="false"
+          size="small"
+          :title="isDark ? 'Açık tema' : 'Koyu tema'"
+          class="navbar__theme-mobile"
+          @click="toggleTheme"
+        />
         <v-btn
           v-if="display.mdAndDown.value"
           :icon="mobileMenuOpen ? 'mdi-close' : 'mdi-menu'"
@@ -107,9 +117,9 @@
                 <span>Anasayfa</span>
               </NuxtLink>
               <NuxtLink
-                to="/blogs"
+                to="/bloglar"
                 class="mobile-menu__link"
-                :class="{ 'mobile-menu__link--active': route.path === '/blogs' }"
+                :class="{ 'mobile-menu__link--active': route.path === '/bloglar' }"
                 @click="mobileMenuOpen = false"
               >
                 <v-icon icon="mdi-post" size="large" />
@@ -153,8 +163,20 @@ const display = useDisplay();
 const route = useRoute();
 const theme = useTheme();
 const mobileMenuOpen = ref(false);
+const isScrolled = ref(false);
 
 const isDark = computed(() => theme.global.current.value.dark);
+
+const handleScroll = () => {
+  isScrolled.value = typeof window !== 'undefined' && window.scrollY > 10;
+};
+
+onMounted(() => {
+  if (typeof window !== 'undefined') {
+    handleScroll();
+    window.addEventListener('scroll', handleScroll, { passive: true });
+  }
+});
 
 const toggleTheme = () => {
   theme.toggle();
@@ -168,6 +190,9 @@ watch(mobileMenuOpen, (open) => {
 });
 
 onBeforeUnmount(() => {
+  if (typeof window !== 'undefined') {
+    window.removeEventListener('scroll', handleScroll);
+  }
   if (typeof document !== "undefined") {
     document.body.style.overflow = "";
   }
@@ -181,12 +206,21 @@ onBeforeUnmount(() => {
   left: 0;
   right: 0;
   z-index: 1000;
-  background: rgb(var(--v-theme-surface, 33 33 33));
-  border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+  background: transparent;
+  border-bottom: 1px solid transparent;
   padding: 0.75rem 1.5rem;
+  transition: background 0.3s, border-color 0.3s, backdrop-filter 0.3s;
 }
 
-.v-theme--light .navbar {
+.navbar--scrolled {
+  background: rgb(var(--v-theme-surface, 33 33 33) / 0.7);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  border-bottom-color: rgba(255, 255, 255, 0.08);
+}
+
+.v-theme--light .navbar--scrolled {
+  background: rgb(var(--v-theme-surface, 255 255 255) / 0.8);
   border-bottom-color: rgba(0, 0, 0, 0.08);
 }
 

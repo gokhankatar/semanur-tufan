@@ -2,6 +2,12 @@ export default defineNuxtConfig({
   compatibilityDate: '2025-07-15',
   app: {
     head: {
+      style: [
+        {
+          textContent: '@layer vuetify-core, vuetify-components, vuetify-overrides, vuetify-utilities, vuetify-final;',
+          tagPriority: 1,
+        },
+      ],
       script: [
         {
           innerHTML: `(function(){if(typeof document==='undefined')return;var t=localStorage.getItem('semanur-tufan-theme')||'dark';var isLight=t==='light';var el=document.documentElement;el.style.backgroundColor=isLight?'#FFFFFF':'#0D1421';el.setAttribute('data-initial-theme',t);})();`,
@@ -31,15 +37,19 @@ export default defineNuxtConfig({
   vuetify: {
     vuetifyOptions: {
       theme: {
-        defaultTheme: "light",
+        defaultTheme: "dark",
         themes: {
           dark: {
             dark: true,
             colors: {
-              background: "#212121",
+              background: "#0D1421",
               surface: "#212121",
               primary: "#69F0AE",
-              secondary: "#D1D1D1"
+              secondary: "#D1D1D1",
+              error: "#CF6679",
+              info: "#2196F3",
+              success: "#4CAF50",
+              warning: "#FB8C00",
             },
           },
           light: {
@@ -48,7 +58,11 @@ export default defineNuxtConfig({
               background: "#FFFFFF",
               surface: "#FFFFFF",
               primary: "#3156FA",
-              secondary: "#424242"
+              secondary: "#424242",
+              error: "#B00020",
+              info: "#2196F3",
+              success: "#4CAF50",
+              warning: "#FB8C00",
             },
           },
         },

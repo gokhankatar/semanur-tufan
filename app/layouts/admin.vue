@@ -255,7 +255,7 @@
             <AdminAyarlar
               v-else-if="activeSection === 'ayarlar'"
               v-model:primary-color="primaryColor"
-              @primary-save="handlePrimarySave"
+              v-model:primary-theme="primaryTheme"
             />
           </div>
         </v-main>
@@ -306,6 +306,7 @@ const emailPassword = ref("");
 const emailLoading = ref(false);
 const emailError = ref("");
 const primaryColor = ref("#3156FA");
+const primaryTheme = ref<"dark" | "light">("light");
 
 const email = ref("");
 const password = ref("");
@@ -340,6 +341,7 @@ watch(activeSection, (section) => {
   if (section === 'ayarlar') {
     const stored = getStoredPrimary();
     const name = theme.global.name.value;
+    primaryTheme.value = name as 'dark' | 'light';
     primaryColor.value = name === 'dark' ? stored.dark : stored.light;
   }
   if (section === 'profil') {
@@ -417,9 +419,15 @@ const handleEmailChange = async () => {
   }
 };
 
-const handlePrimarySave = (theme: "dark" | "light") => {
-  setPrimaryForTheme(theme, primaryColor.value);
-};
+watch(primaryColor, () => {
+  setPrimaryForTheme(primaryTheme.value, primaryColor.value);
+});
+
+watch(primaryTheme, (themeName) => {
+  theme.change(themeName);
+  const stored = getStoredPrimary();
+  primaryColor.value = themeName === 'dark' ? stored.dark : stored.light;
+});
 
 const handleLogin = async () => {
   const { valid } = await formRef.value?.validate();

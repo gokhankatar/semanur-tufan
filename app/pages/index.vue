@@ -1,15 +1,8 @@
-<template>  
-    <section class="hero mb-12">
-      <h1 class="text-h3 text-md-h2 font-weight-bold mb-2">
-        Semanur Tufan
-      </h1>
-      <p class="text-title-large text-medium-emphasis">
-        Kişisel dergi ve yazılar
-      </p>
-    </section>
+<template>
+    <HomeHero />
 
-    <section>
-      <h2 class="text-h5 mb-4">Dergiler</h2>
+    <section id="dergiler" class="pa-4 pa-md-6">
+      <h2 class="text-h5 mb-6">Dergiler</h2>
       <div v-if="loading" class="d-flex justify-center py-12">
         <v-progress-circular indeterminate color="primary" size="64" />
       </div>
