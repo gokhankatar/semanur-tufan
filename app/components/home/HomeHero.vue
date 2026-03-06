@@ -126,11 +126,11 @@ onMounted(() => {
 .home-hero__gradient {
   position: absolute;
   inset: 0;
-  background: linear-gradient(120deg, #0f0c29 0%, #302b63 50%, #24243e 100%);
+  background-image: repeating-linear-gradient(0deg, hsla(83, 0%, 53%, 0.03) 0px, hsla(83, 0%, 53%, 0.03) 1px, transparent 1px, transparent 12px), repeating-linear-gradient(67.5deg, hsla(83, 0%, 53%, 0.03) 0px, hsla(83, 0%, 53%, 0.03) 1px, transparent 1px, transparent 12px), repeating-linear-gradient(157.5deg, hsla(83, 0%, 53%, 0.03) 0px, hsla(83, 0%, 53%, 0.03) 1px, transparent 1px, transparent 12px), repeating-linear-gradient(112.5deg, hsla(83, 0%, 53%, 0.03) 0px, hsla(83, 0%, 53%, 0.03) 1px, transparent 1px, transparent 12px), repeating-linear-gradient(22.5deg, hsla(83, 0%, 53%, 0.03) 0px, hsla(83, 0%, 53%, 0.03) 1px, transparent 1px, transparent 12px), repeating-linear-gradient(0deg, hsla(83, 0%, 53%, 0.03) 0px, hsla(83, 0%, 53%, 0.03) 1px, transparent 1px, transparent 12px), repeating-linear-gradient(112.5deg, hsla(83, 0%, 53%, 0.03) 0px, hsla(83, 0%, 53%, 0.03) 1px, transparent 1px, transparent 12px), repeating-linear-gradient(22.5deg, hsla(83, 0%, 53%, 0.03) 0px, hsla(83, 0%, 53%, 0.03) 1px, transparent 1px, transparent 12px), linear-gradient(90deg, rgb(40, 24, 113), rgb(159, 96, 150));
 }
 
 .v-theme--light .home-hero__gradient {
-  background: linear-gradient(120deg, #a1c4fd 0%, #c2e9fb 100%);
+  background-image: repeating-linear-gradient(0deg, hsla(83, 0%, 53%, 0.03) 0px, hsla(83, 0%, 53%, 0.03) 1px, transparent 1px, transparent 12px), repeating-linear-gradient(67.5deg, hsla(83, 0%, 53%, 0.03) 0px, hsla(83, 0%, 53%, 0.03) 1px, transparent 1px, transparent 12px), repeating-linear-gradient(157.5deg, hsla(83, 0%, 53%, 0.03) 0px, hsla(83, 0%, 53%, 0.03) 1px, transparent 1px, transparent 12px), repeating-linear-gradient(112.5deg, hsla(83, 0%, 53%, 0.03) 0px, hsla(83, 0%, 53%, 0.03) 1px, transparent 1px, transparent 12px), repeating-linear-gradient(22.5deg, hsla(83, 0%, 53%, 0.03) 0px, hsla(83, 0%, 53%, 0.03) 1px, transparent 1px, transparent 12px), repeating-linear-gradient(0deg, hsla(83, 0%, 53%, 0.03) 0px, hsla(83, 0%, 53%, 0.03) 1px, transparent 1px, transparent 12px), repeating-linear-gradient(112.5deg, hsla(83, 0%, 53%, 0.03) 0px, hsla(83, 0%, 53%, 0.03) 1px, transparent 1px, transparent 12px), repeating-linear-gradient(22.5deg, hsla(83, 0%, 53%, 0.03) 0px, hsla(83, 0%, 53%, 0.03) 1px, transparent 1px, transparent 12px), linear-gradient(90deg, rgba(40, 24, 113, 0.11), rgba(159, 96, 150, 0.47));
 }
 
 .home-hero__gradient-mesh {

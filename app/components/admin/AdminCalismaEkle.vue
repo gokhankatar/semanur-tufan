@@ -4,35 +4,41 @@
 
     <v-card variant="tonal" class="pa-4 pa-md-6">
       <v-alert type="info" variant="tonal" class="mb-4" density="compact">
-        Çalışmalar özelliği yakında eklenecek. Firestore <code>works</code> koleksiyonu oluşturulacak.
+        Çalışmalar özelliği yakında eklenecek. Firestore <code>works</code> koleksiyonu
+        oluşturulacak.
       </v-alert>
       <v-form>
         <v-text-field
           label="Çalışma Başlığı"
           variant="outlined"
-          class="mb-3"
-          disabled
+          class="mb-2"
+          hide-details="auto"
+          :density="display.xl.value ? 'comfortable' : 'compact'"
         />
         <v-text-field
           label="Kategori"
           variant="outlined"
-          class="mb-3"
-          disabled
+          class="mb-2"
+          hide-details="auto"
+          :density="display.xl.value ? 'comfortable' : 'compact'"
         />
         <v-textarea
           label="Açıklama"
           variant="outlined"
           rows="4"
-          class="mb-3"
-          disabled
+          class="mb-2"
+          hide-details="auto"
+          :density="display.xl.value ? 'comfortable' : 'compact'"
+          no-resize
         />
-        <v-btn color="primary" disabled>Yakında</v-btn>
+        <v-btn color="primary" text="Ekle" prepend-icon="mdi-plus" />
       </v-form>
     </v-card>
   </div>
 </template>
 
 <script setup lang="ts">
+const display = useDisplay();
 </script>
 
 <style scoped>

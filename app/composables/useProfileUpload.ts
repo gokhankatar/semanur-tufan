@@ -54,5 +54,28 @@ export function useProfileUpload() {
     return urlData.publicUrl
   }
 
-  return { uploadAvatar, uploadBlogImage }
+  /** Genel dosya yükleme - PDF, resim vb. path: pdfs, covers, blogs vb. */
+  const uploadFile = async (path: string, file: File): Promise<string> => {
+    if (!file) throw new Error('Dosya yok!')
+
+    const safeName = file.name.replace(/\s+/g, '-').replace(/[^a-zA-Z0-9.-]/g, '')
+    const fileName = `${path}/${Date.now()}_${safeName}`
+
+    const { error } = await $supabase.storage.from(BUCKET).upload(fileName, file, {
+      upsert: true,
+      contentType: file.type,
+    })
+
+    if (error) {
+      console.error('Supabase upload hatası:', error)
+      throw error
+    }
+
+    const { data: urlData } = $supabase.storage.from(BUCKET).getPublicUrl(fileName)
+    if (!urlData?.publicUrl) throw new Error('Public URL alınamadı!')
+
+    return urlData.publicUrl
+  }
+
+  return { uploadAvatar, uploadBlogImage, uploadFile }
 }

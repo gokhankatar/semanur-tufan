@@ -76,58 +76,49 @@
           </div>
 
           <v-list density="comfortable" nav class="admin-drawer__list">
-            <v-list-item
-              :active="activeSection === 'ozet'"
-              prepend-icon="mdi-view-dashboard"
-              title="Özet"
-              value="ozet"
-              @click="activeSection = 'ozet'"
-            />
-            <v-list-item
-              :active="activeSection === 'dergi'"
-              prepend-icon="mdi-book-open-variant"
-              title="Dergi Ekle"
-              value="dergi"
-              @click="activeSection = 'dergi'"
-            />
-            <v-list-item
-              :active="activeSection === 'blog'"
-              prepend-icon="mdi-post"
-              title="Blog Yazısı Ekle"
-              value="blog"
-              @click="activeSection = 'blog'"
-            />
-            <v-list-item
-              :active="activeSection === 'calisma'"
-              prepend-icon="mdi-briefcase"
-              title="Çalışma Ekle"
-              value="calisma"
-              @click="activeSection = 'calisma'"
-            />
-            <v-divider class="my-2" />
-            <v-list-item
-              :active="activeSection === 'profil'"
-              prepend-icon="mdi-account"
-              title="Profil"
-              value="profil"
-              @click="activeSection = 'profil'"
-            />
-            <v-list-item
-              :active="activeSection === 'ayarlar'"
-              prepend-icon="mdi-cog"
-              title="Ayarlar"
-              value="ayarlar"
-              @click="activeSection = 'ayarlar'"
-            />
-            <v-list-item
-              prepend-icon="mdi-palette"
-              title="Tema Değiştir"
-              @click="theme.toggle()"
+            <template
+              v-for="(item, i) in adminMenuItems"
+              :key="
+                item.type === 'nav'
+                  ? item.id
+                  : item.type === 'theme'
+                  ? 'theme'
+                  : `divider-${i}`
+              "
             >
-              <template #append>
-                <v-icon :icon="theme.global.current.value.dark ? 'mdi-weather-sunny' : 'mdi-weather-night'" size="small" />
-              </template>
-            </v-list-item>
+              <v-divider v-if="item.type === 'divider'" key="divider" class="my-2" />
+              <v-list-item
+                v-else-if="item.type === 'nav'"
+                :active="activeSection === item.id"
+                :prepend-icon="item.icon"
+                :title="item.title"
+                :value="item.id"
+                @click="activeSection = item.id"
+                rounded="lg"
+                :density="display.xl.value ? 'comfortable' : 'compact'"
+                class="mx-1"
+              />
+              <v-list-item
+                v-else-if="item.type === 'theme'"
+                :prepend-icon="item.icon"
+                :title="item.title"
+                @click="theme.toggle()"
+                rounded="lg"
+                :density="display.xl.value ? 'comfortable' : 'compact'"
+                class="mx-1"
+              >
+                <template #append>
+                  <v-icon
+                    :icon="
+                      theme.global.current.value.dark
+                        ? 'mdi-weather-sunny'
+                        : 'mdi-weather-night'
+                    "
+                    size="small"
+                  />
+                </template>
+              </v-list-item>
+            </template>
           </v-list>
           <template #append>
             <div class="pa-4">
@@ -138,9 +129,14 @@
           </template>
         </v-navigation-drawer>
 
-        <v-main class="admin-main">
+        <v-row
+          class="mx-auto pt-5 pa-0 pa-lg-5 pa-xl-10 d-flex justify-center align-center ml-lg-15"
+        >
           <v-app-bar density="compact" class="admin-appbar">
-            <v-app-bar-nav-icon v-if="display.mdAndDown.value" @click="drawer = !drawer" />
+            <v-app-bar-nav-icon
+              v-if="display.mdAndDown.value"
+              @click="drawer = !drawer"
+            />
             <v-toolbar-title class="d-none d-sm-flex">Admin Panel</v-toolbar-title>
             <v-spacer />
             <v-menu
@@ -150,7 +146,12 @@
             >
               <template #activator="{ props }">
                 <v-btn v-bind="props" icon variant="text" class="admin-avatar-btn mr-2">
-                  <v-avatar size="40" color="primary" variant="tonal" class="admin-avatar">
+                  <v-avatar
+                    size="40"
+                    color="primary"
+                    variant="tonal"
+                    class="admin-avatar"
+                  >
                     <v-img
                       v-if="userProfile?.avatar_url"
                       :src="userProfile.avatar_url"
@@ -174,9 +175,7 @@
                     <p class="text-body-medium font-weight-medium mb-0">
                       {{ authStore.user?.email }}
                     </p>
-                    <p class="text-caption text-medium-emphasis mb-0">
-                      Admin
-                    </p>
+                    <p class="text-caption text-medium-emphasis mb-0">Admin</p>
                   </div>
                 </div>
                 <v-divider />
@@ -202,7 +201,14 @@
                     @click="theme.toggle()"
                   >
                     <template #append>
-                      <v-icon :icon="theme.global.current.value.dark ? 'mdi-weather-sunny' : 'mdi-weather-night'" size="small" />
+                      <v-icon
+                        :icon="
+                          theme.global.current.value.dark
+                            ? 'mdi-weather-sunny'
+                            : 'mdi-weather-night'
+                        "
+                        size="small"
+                      />
                     </template>
                   </v-list-item>
                 </v-list>
@@ -215,50 +221,51 @@
                     prepend-icon="mdi-logout"
                     rounded="lg"
                     @click="handleLogout"
-                  >
-                    Çıkış Yap
-                  </v-btn>
+                    text="Çıkış Yap"
+                  />
                 </div>
               </v-card>
             </v-menu>
           </v-app-bar>
 
-          <div class="admin-content pa-4 pa-md-6">
-            <AdminOzet
-              v-if="activeSection === 'ozet'"
-              :stats="stats"
-              :user-profile="userProfile"
-              :last-login-formatted="lastLoginFormatted"
-              :avatar-loading="avatarLoading"
-              @avatar-change="handleAvatarChange"
-              @password-click="activeSection = 'profil'"
-            />
-            <AdminDergiEkle v-else-if="activeSection === 'dergi'" />
-            <AdminBlogEkle v-else-if="activeSection === 'blog'" />
-            <AdminCalismaEkle v-else-if="activeSection === 'calisma'" />
-            <AdminProfil
-              v-else-if="activeSection === 'profil'"
-              :user-profile="userProfile"
-              :avatar-loading="avatarLoading"
-              v-model:new-email="newEmail"
-              v-model:email-password="emailPassword"
-              :email-loading="emailLoading"
-              :email-error="emailError"
-              v-model:new-password="newPassword"
-              v-model:show-password="showNewPassword"
-              :password-loading="passwordLoading"
-              :password-error="passwordError"
-              @avatar-change="handleAvatarChange"
-              @email-save="handleEmailChange"
-              @password-save="handlePasswordChange"
-            />
-            <AdminAyarlar
-              v-else-if="activeSection === 'ayarlar'"
-              v-model:primary-color="primaryColor"
-              v-model:primary-theme="primaryTheme"
-            />
-          </div>
-        </v-main>
+          <v-col cols="12">
+            <div class="admin-content">
+              <AdminOzet
+                v-if="activeSection === 'ozet'"
+                :stats="stats"
+                :user-profile="userProfile"
+                :last-login-formatted="lastLoginFormatted"
+                :avatar-loading="avatarLoading"
+                @avatar-change="handleAvatarChange"
+                @password-click="activeSection = 'profil'"
+              />
+              <AdminDergiEkle v-else-if="activeSection === 'dergi'" />
+              <AdminBlogEkle v-else-if="activeSection === 'blog'" />
+              <AdminCalismaEkle v-else-if="activeSection === 'calisma'" />
+              <AdminProfil
+                v-else-if="activeSection === 'profil'"
+                :user-profile="userProfile"
+                :avatar-loading="avatarLoading"
+                v-model:new-email="newEmail"
+                v-model:email-password="emailPassword"
+                :email-loading="emailLoading"
+                :email-error="emailError"
+                v-model:new-password="newPassword"
+                v-model:show-password="showNewPassword"
+                :password-loading="passwordLoading"
+                :password-error="passwordError"
+                @avatar-change="handleAvatarChange"
+                @email-save="handleEmailChange"
+                @password-save="handlePasswordChange"
+              />
+              <AdminAyarlar
+                v-else-if="activeSection === 'ayarlar'"
+                v-model:primary-color="primaryColor"
+                v-model:primary-theme="primaryTheme"
+              />
+            </div>
+          </v-col>
+        </v-row>
       </template>
 
       <!-- Giriş yapılmış ama admin değilse -->
@@ -279,6 +286,8 @@
 </template>
 
 <script setup lang="ts">
+import type { AdminSectionId } from "~/utils/adminMenu";
+
 useHead({
   title: "Semanur Tufan | Admin",
 });
@@ -286,7 +295,7 @@ useHead({
 const authStore = useAuthStore();
 const display = useDisplay();
 const drawer = ref(true);
-const activeSection = ref<"ozet" | "dergi" | "blog" | "calisma" | "profil" | "ayarlar">("ozet");
+const activeSection = ref<AdminSectionId>("ozet");
 
 const { fetchAllStats } = useAdminStats();
 const { fetchProfile, updateAvatar, profile: userProfile } = useUserProfile();
@@ -338,16 +347,16 @@ const lastLoginFormatted = computed(() => {
 });
 
 watch(activeSection, (section) => {
-  if (section === 'ayarlar') {
+  if (section === "ayarlar") {
     const stored = getStoredPrimary();
     const name = theme.global.name.value;
-    primaryTheme.value = name as 'dark' | 'light';
-    primaryColor.value = name === 'dark' ? stored.dark : stored.light;
+    primaryTheme.value = name as "dark" | "light";
+    primaryColor.value = name === "dark" ? stored.dark : stored.light;
   }
-  if (section === 'profil') {
-    newEmail.value = authStore.user?.email ?? '';
-    emailPassword.value = '';
-    emailError.value = '';
+  if (section === "profil") {
+    newEmail.value = authStore.user?.email ?? "";
+    emailPassword.value = "";
+    emailError.value = "";
   }
 });
 
@@ -426,7 +435,7 @@ watch(primaryColor, () => {
 watch(primaryTheme, (themeName) => {
   theme.change(themeName);
   const stored = getStoredPrimary();
-  primaryColor.value = themeName === 'dark' ? stored.dark : stored.light;
+  primaryColor.value = themeName === "dark" ? stored.dark : stored.light;
 });
 
 const handleLogin = async () => {
@@ -519,8 +528,18 @@ const handleLogout = async () => {
   background: rgb(var(--v-theme-background));
 }
 
+.admin-main :deep(.v-main__wrap) {
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+}
+
 .admin-content {
-  max-width: 800px;
+  width: 100%;
+  max-width: 100%;
+  flex: 1;
+  padding: 1.5rem 2rem;
+  min-width: 0;
 }
 
 /* Admin kartları - tema uyumlu border */
