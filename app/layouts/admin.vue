@@ -50,9 +50,56 @@
                 :loading="loading"
                 text="Giriş Yap"
               />
+              <v-btn
+                variant="text"
+                size="small"
+                block
+                class="mt-2 text-medium-emphasis"
+                @click="openResetDialog"
+              >
+                Şifremi unuttum
+              </v-btn>
             </v-form>
           </v-card-text>
         </v-card>
+
+        <v-dialog v-model="resetDialog" max-width="400" persistent>
+          <v-card rounded="lg">
+            <v-card-title class="pa-4">Şifre sıfırlama</v-card-title>
+            <v-card-text class="pa-4 pt-0">
+              <p class="text-body-small text-medium-emphasis mb-3">
+                E-posta adresinizi girin. Size şifre sıfırlama bağlantısı göndereceğiz.
+              </p>
+              <v-text-field
+                v-model="resetEmail"
+                label="E-posta"
+                type="email"
+                variant="outlined"
+                density="compact"
+                hide-details
+                :rules="[rules.required, rules.email]"
+              />
+              <v-alert v-if="resetError" type="error" class="mt-3" density="compact" closable>
+                {{ resetError }}
+              </v-alert>
+              <v-alert v-if="resetSuccess" type="success" class="mt-3" density="compact">
+                Sıfırlama bağlantısı e-posta adresinize gönderildi. Gelen kutunuzu kontrol edin.
+              </v-alert>
+            </v-card-text>
+            <v-card-actions class="pa-4 pt-0">
+              <v-spacer />
+              <v-btn variant="text" @click="resetDialog = false">İptal</v-btn>
+              <v-btn
+                color="primary"
+                variant="elevated"
+                :loading="resetLoading"
+                @click="handlePasswordReset"
+              >
+                Gönder
+              </v-btn>
+            </v-card-actions>
+          </v-card>
+        </v-dialog>
         <NuxtLink to="/" class="admin-back-link">
           <v-icon icon="mdi-arrow-left" size="small" />
           Ana sayfaya dön
@@ -251,6 +298,7 @@
               <AdminBloglar v-else-if="activeSection === 'blog'" />
               <AdminCalismalar v-else-if="activeSection === 'calisma'" />
               <AdminTodo v-else-if="activeSection === 'todo'" />
+              <AdminAboneler v-else-if="activeSection === 'aboneler'" />
               <AdminProfil
                 v-else-if="activeSection === 'profil'"
                 :user-profile="userProfile"
@@ -298,7 +346,7 @@
 import type { AdminSectionId } from "~/utils/adminMenu";
 
 useHead({
-  title: "Semanur Tufan | Admin",
+  title: "Admin",
 });
 
 const authStore = useAuthStore();
@@ -312,7 +360,7 @@ const { uploadAvatar } = useProfileUpload();
 const { getStoredPrimary, setPrimaryForTheme } = useThemeColor();
 const theme = useTheme();
 
-const stats = ref({ journalCount: 0, blogCount: 0, calismaCount: 0, todoCount: 0 });
+const stats = ref({ journalCount: 0, blogCount: 0, calismaCount: 0, todoCount: 0, subscriberCount: 0 });
 const avatarLoading = ref(false);
 const newPassword = ref("");
 const showNewPassword = ref(false);
@@ -447,6 +495,52 @@ watch(primaryTheme, (themeName) => {
   primaryColor.value = themeName === "dark" ? stored.dark : stored.light;
 });
 
+const resetDialog = ref(false);
+const resetEmail = ref("");
+
+const openResetDialog = () => {
+  resetEmail.value = email.value || "";
+  resetError.value = "";
+  resetSuccess.value = false;
+  resetDialog.value = true;
+};
+const resetLoading = ref(false);
+const resetError = ref("");
+const resetSuccess = ref(false);
+
+const handlePasswordReset = async () => {
+  const emailValid = rules.email(resetEmail.value);
+  if (!resetEmail.value || emailValid !== true) {
+    resetError.value = !resetEmail.value ? "E-posta gerekli" : (emailValid as string);
+    return;
+  }
+  resetLoading.value = true;
+  resetError.value = "";
+  resetSuccess.value = false;
+  try {
+    const { $authActions } = useNuxtApp();
+    await $authActions.sendPasswordResetEmail(resetEmail.value);
+    resetSuccess.value = true;
+    setTimeout(() => {
+      resetDialog.value = false;
+      resetEmail.value = "";
+      resetSuccess.value = false;
+    }, 3000);
+  } catch (e: unknown) {
+    const err = e as { message?: string };
+    resetError.value = err?.message || "Bağlantı gönderilemedi. E-posta adresini kontrol edin.";
+  } finally {
+    resetLoading.value = false;
+  }
+};
+
+watch(resetDialog, (open) => {
+  if (!open) {
+    resetError.value = "";
+    resetSuccess.value = false;
+  }
+});
+
 const handleLogin = async () => {
   const { valid } = await formRef.value?.validate();
   if (!valid) return;
@@ -576,6 +670,12 @@ const handleLogout = async () => {
 .admin-content :deep(.v-card:hover) {
   border-color: rgb(var(--v-theme-primary) / 0.35);
   box-shadow: 0 4px 12px rgb(0 0 0 / 0.08);
+}
+
+/* Dialog/overlay kartları - arka plan olmalı */
+.admin-content :deep(.v-overlay .v-card),
+.admin-content :deep(.v-dialog .v-card) {
+  background: rgb(var(--v-theme-surface)) !important;
 }
 
 /* Avatar menü - geniş, animasyonlu */

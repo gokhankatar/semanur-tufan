@@ -27,13 +27,13 @@
           :href="journal.pdf_url"
           target="_blank"
           variant="elevated"
-          :size="display.xl.value ? 'small' : 'x-small'"
-          :icon="!display.xl.value ? 'mdi-download' : undefined"
-          :prepend-icon="display.xl.value ? 'mdi-download' : undefined"
+          :size="display.mdAndUp.value ? 'small' : 'x-small'"
+          :icon="!display.mdAndUp.value ? 'mdi-download' : undefined"
+          :prepend-icon="display.mdAndUp.value ? 'mdi-download' : undefined"
           class="journal-card__download"
           @click.stop
         >
-          <template v-if="display.xl.value">İndir</template>
+          <template v-if="display.mdAndUp.value">İndir</template>
         </v-btn>
         <v-chip
           class="journal-card__views"

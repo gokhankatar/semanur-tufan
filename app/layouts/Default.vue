@@ -17,12 +17,13 @@
       >
         <v-btn
           color="primary"
-          variant="tonal"
+          variant="elevated"
+          rounded="lg"
+          size="small"
           prepend-icon="mdi-view-dashboard"
           class="admin-float-btn__inner"
-        >
-          Admin Paneline Dön
-        </v-btn>
+          text="Admin Paneline Dön"
+        />
       </NuxtLink>
     </template>
   </div>

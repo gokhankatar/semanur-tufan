@@ -3,6 +3,7 @@ import {
   onAuthStateChanged,
   signInWithEmailAndPassword,
   signOut,
+  sendPasswordResetEmail,
   updatePassword,
   updateEmail,
   EmailAuthProvider,
@@ -38,6 +39,8 @@ export default defineNuxtPlugin({
           signIn: (email: string, password: string) =>
             signInWithEmailAndPassword(auth, email, password),
           signOut: () => signOut(auth),
+          sendPasswordResetEmail: (email: string) =>
+            sendPasswordResetEmail(auth, email),
           updatePassword: (newPassword: string) => {
             const u = auth.currentUser
             if (!u) throw new Error('Giriş yapılmamış')

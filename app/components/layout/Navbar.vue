@@ -2,7 +2,12 @@
   <header class="navbar" :class="{ 'navbar--scrolled': isScrolled }">
     <div class="navbar__inner">
       <NuxtLink to="/" class="navbar__logo">
-        <span class="navbar__logo-text">Gökgerdan Dergisi</span>
+        <img
+          src="/images/logo_small.png"
+          alt="Gökgerdan Dergisi"
+          class="navbar__logo-img rounded-lg"
+        />
+        <span v-if="!display.xs.value" class="navbar__logo-text">Gökgerdan Dergisi</span>
       </NuxtLink>
 
       <nav v-if="!display.mdAndDown.value" class="navbar__center">
@@ -14,6 +19,14 @@
           >
             <v-icon icon="mdi-home" size="small" />
             <span>Anasayfa</span>
+          </NuxtLink>
+          <NuxtLink
+            to="/dergiler"
+            class="navbar__nav-link"
+            :class="{ 'navbar__nav-link--active': route.path === '/dergiler' }"
+          >
+            <v-icon icon="mdi-book-open-variant" size="small" />
+            <span>Dergiler</span>
           </NuxtLink>
           <NuxtLink
             to="/bloglar"
@@ -117,6 +130,15 @@
                 <span>Anasayfa</span>
               </NuxtLink>
               <NuxtLink
+                to="/dergiler"
+                class="mobile-menu__link"
+                :class="{ 'mobile-menu__link--active': route.path === '/dergiler' }"
+                @click="mobileMenuOpen = false"
+              >
+                <v-icon icon="mdi-book-open-variant" size="large" />
+                <span>Dergiler</span>
+              </NuxtLink>
+              <NuxtLink
                 to="/bloglar"
                 class="mobile-menu__link"
                 :class="{ 'mobile-menu__link--active': route.path === '/bloglar' }"
@@ -154,7 +176,6 @@
         </div>
       </Transition>
     </Teleport>
-
   </header>
 </template>
 
@@ -168,13 +189,13 @@ const isScrolled = ref(false);
 const isDark = computed(() => theme.global.current.value.dark);
 
 const handleScroll = () => {
-  isScrolled.value = typeof window !== 'undefined' && window.scrollY > 10;
+  isScrolled.value = typeof window !== "undefined" && window.scrollY > 10;
 };
 
 onMounted(() => {
-  if (typeof window !== 'undefined') {
+  if (typeof window !== "undefined") {
     handleScroll();
-    window.addEventListener('scroll', handleScroll, { passive: true });
+    window.addEventListener("scroll", handleScroll, { passive: true });
   }
 });
 
@@ -190,8 +211,8 @@ watch(mobileMenuOpen, (open) => {
 });
 
 onBeforeUnmount(() => {
-  if (typeof window !== 'undefined') {
-    window.removeEventListener('scroll', handleScroll);
+  if (typeof window !== "undefined") {
+    window.removeEventListener("scroll", handleScroll);
   }
   if (typeof document !== "undefined") {
     document.body.style.overflow = "";
@@ -249,6 +270,7 @@ onBeforeUnmount(() => {
   height: 36px;
   margin-right: 0.5rem;
   flex-shrink: 0;
+  object-fit: contain;
 }
 
 .navbar__logo-text {

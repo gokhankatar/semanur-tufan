@@ -1,4 +1,4 @@
-const PAGE_TURN_SOUND = '/sounds/page-turn.mp3'
+const PAGE_TURN_SOUND = '/sounds/page-flip.mp3'
 
 export function usePageTurnSound() {
   let audio: HTMLAudioElement | null = null

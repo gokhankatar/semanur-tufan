@@ -269,7 +269,7 @@
 import type { Journal } from "~/interfaces";
 
 defineProps<{ embedded?: boolean }>();
-const emit = defineEmits<{ saved: [] }>();
+const emit = defineEmits<{ saved: [title: string] }>();
 const display = useDisplay();
 const { addJournal } = useJournals();
 const { uploadFile } = useProfileUpload();
@@ -462,8 +462,9 @@ const handleSubmitDetails = async () => {
     });
 
     success.value = true;
+    const title = form.journal_title;
     closeDetailsDialog();
-    emit('saved');
+    emit('saved', title);
   } catch (e: unknown) {
     const err = e as { message?: string };
     error.value = err?.message || "Dergi eklenirken bir hata oluştu.";

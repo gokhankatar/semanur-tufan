@@ -39,15 +39,25 @@ export function useAdminStats() {
     }
   }
 
+  const fetchSubscriberCount = async (): Promise<number> => {
+    try {
+      const snapshot = await getCountFromServer(collection($firestore, 'subscribers'))
+      return snapshot.data().count
+    } catch {
+      return 0
+    }
+  }
+
   const fetchAllStats = async () => {
-    const [journalCount, blogCount, calismaCount, todoCount] = await Promise.all([
+    const [journalCount, blogCount, calismaCount, todoCount, subscriberCount] = await Promise.all([
       fetchJournalCount(),
       fetchBlogCount(),
       fetchCalismaCount(),
       fetchTodoCount(),
+      fetchSubscriberCount(),
     ])
-    return { journalCount, blogCount, calismaCount, todoCount }
+    return { journalCount, blogCount, calismaCount, todoCount, subscriberCount }
   }
 
-  return { fetchJournalCount, fetchBlogCount, fetchCalismaCount, fetchTodoCount, fetchAllStats }
+  return { fetchJournalCount, fetchBlogCount, fetchCalismaCount, fetchTodoCount, fetchSubscriberCount, fetchAllStats }
 }

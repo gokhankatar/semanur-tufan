@@ -38,9 +38,11 @@
           :aria-label="config.public.adminEmail"
         />
       </div>
-      <p class="site-footer__copy">
-        {{ config.public.adminEmail }} · © {{ new Date().getFullYear() }} Gökgerdan Dergisi
-      </p>
+      <div class="site-footer__copy d-flex align-center justify-center flex-wrap ga-2">
+        <NuxtLink to="#iletisim" class="site-footer__link">İletişim</NuxtLink>
+        <span>·</span>
+        <span>{{ config.public.adminEmail }} · © {{ new Date().getFullYear() }} Gökgerdan Dergisi</span>
+      </div>
     </div>
   </footer>
 </template>
@@ -115,5 +117,14 @@ const config = useRuntimeConfig()
 
 .v-theme--light .site-footer__copy {
   color: rgba(0, 0, 0, 0.6);
+}
+
+.site-footer__link {
+  color: rgb(var(--v-theme-primary));
+  text-decoration: none;
+}
+
+.site-footer__link:hover {
+  text-decoration: underline;
 }
 </style>

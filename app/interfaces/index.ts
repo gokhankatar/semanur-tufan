@@ -35,3 +35,11 @@ export interface Todo {
   completed: boolean
   created_at?: { seconds: number; nanoseconds: number }
 }
+
+export interface Subscriber {
+  id?: string
+  name: string
+  surname: string
+  email: string
+  created_at?: { seconds: number; nanoseconds: number }
+}

@@ -1,4 +1,4 @@
-export type AdminSectionId = 'ozet' | 'dergi' | 'blog' | 'calisma' | 'todo' | 'profil' | 'ayarlar'
+export type AdminSectionId = 'ozet' | 'dergi' | 'blog' | 'calisma' | 'todo' | 'aboneler' | 'profil' | 'ayarlar'
 
 export type AdminMenuItem =
   | { type: 'nav'; id: AdminSectionId; icon: string; title: string }
@@ -11,6 +11,7 @@ export const adminMenuItems: AdminMenuItem[] = [
   { type: 'nav', id: 'blog', icon: 'mdi-post', title: 'Bloglar' },
   { type: 'nav', id: 'calisma', icon: 'mdi-briefcase', title: 'Çalışmalar' },
   { type: 'nav', id: 'todo', icon: 'mdi-format-list-checks', title: 'Yapılacaklar' },
+  { type: 'nav', id: 'aboneler', icon: 'mdi-email-multiple', title: 'Aboneler' },
   { type: 'divider' },
   { type: 'nav', id: 'profil', icon: 'mdi-account', title: 'Profil' },
   { type: 'nav', id: 'ayarlar', icon: 'mdi-cog', title: 'Ayarlar' },

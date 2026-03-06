@@ -253,6 +253,7 @@ const handleSubmit = async () => {
     }
 
     success.value = true;
+    const title = form.work_title;
     if (!props.editWork) {
       form.work_title = "";
       form.work_content = "";
@@ -261,7 +262,7 @@ const handleSubmit = async () => {
       coverFile.value = [];
       revokeCoverPreview();
     }
-    emit("saved");
+    emit("saved", props.editWork ? undefined : title);
   } catch (e: unknown) {
     const err = e as { message?: string };
     error.value = err?.message || "Çalışma eklenirken bir hata oluştu.";

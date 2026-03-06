@@ -2,6 +2,9 @@ export default defineNuxtConfig({
   compatibilityDate: '2025-07-15',
   app: {
     head: {
+      link: [
+        { rel: "icon", type: "image/png", href: "/images/logo_small.png" },
+      ],
       style: [
         {
           textContent: '@layer vuetify-core, vuetify-components, vuetify-overrides, vuetify-utilities, vuetify-final;',
@@ -17,11 +20,14 @@ export default defineNuxtConfig({
     },
   },
   runtimeConfig: {
+    mail: process.env.MAIL_USER || '',
+    mailPassword: process.env.MAIL_PASSWORD || '',
     public: {
       firebaseApiKey: process.env.FIREBASE_API_KEY,
       supabaseUrl: process.env.SUPABASE_URL,
       supabaseKey: process.env.SUPABASE_KEY,
-      adminEmail: process.env.ADMIN_EMAIL || 'semanurtopal3@gmail.com',
+      adminEmail: process.env.ADMIN_EMAIL || 'gokgerdandergisi@gmail.com',
+      siteUrl: process.env.NUXT_PUBLIC_SITE_URL || 'https://semanur-tufan.vercel.app',
     },
   },
   modules: [

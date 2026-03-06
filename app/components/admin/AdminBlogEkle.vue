@@ -135,7 +135,7 @@
 import type { Blog } from "~/interfaces";
 
 const props = defineProps<{ editBlog?: Blog; embedded?: boolean }>();
-const emit = defineEmits<{ saved: []; cancel: [] }>();
+const emit = defineEmits<{ saved: [title?: string]; cancel: [] }>();
 const display = useDisplay();
 const { addBlog, updateBlog } = useBlogs();
 const { uploadFile } = useProfileUpload();
@@ -254,6 +254,7 @@ const handleSubmit = async () => {
     }
 
     success.value = true;
+    const title = form.blog_title;
     if (!props.editBlog) {
       form.blog_title = "";
       form.blog_content = "";
@@ -262,7 +263,7 @@ const handleSubmit = async () => {
       coverFile.value = [];
       revokeCoverPreview();
     }
-    emit("saved");
+    emit("saved", props.editBlog ? undefined : title);
   } catch (e: unknown) {
     const err = e as { message?: string };
     error.value = err?.message || "Blog eklenirken bir hata oluştu.";

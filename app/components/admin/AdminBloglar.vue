@@ -209,9 +209,12 @@ const openAdd = () => {
   addDialog.value = true
 }
 
-const onAddSaved = () => {
+const { notifySubscribers } = useNotifySubscribers()
+
+const onAddSaved = async (title?: string) => {
   addDialog.value = false
-  load()
+  await load()
+  if (title) await notifySubscribers('blog', title)
 }
 
 const openEdit = (b: Blog) => {

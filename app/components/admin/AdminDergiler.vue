@@ -1,5 +1,5 @@
 <template>
-  <div class="admin-section">
+  <div class="admin-section pt-5 pt-lg-15">
     <div class="d-flex flex-wrap align-center justify-space-between ga-3 mb-4">
       <h2 class="text-headline-small mb-0">Dergiler</h2>
       <div class="d-flex align-center ga-2">
@@ -40,51 +40,47 @@
     </v-alert>
 
     <!-- Tablo görünümü -->
-    <v-card v-if="viewMode === 'table'" variant="outlined" class="overflow-hidden">
-      <v-table density="comfortable">
-        <thead>
-          <tr>
-            <th>Kapak</th>
-            <th>Başlık</th>
-            <th>Yayıncı</th>
-            <th>Sayı</th>
-            <th class="text-end">İşlemler</th>
-          </tr>
-        </thead>
-        <tbody>
-          <tr v-for="j in journals" :key="j.id">
-            <td class="py-1">
-              <v-avatar size="48" rounded>
-                <v-img v-if="j.journal_cover_img" :src="j.journal_cover_img" cover />
-                <v-icon v-else icon="mdi-book-open-variant" />
-              </v-avatar>
-            </td>
-            <td>{{ j.journal_title }}</td>
-            <td>{{ j.publisher_name }}</td>
-            <td>{{ j.journal_volume_number }}</td>
-            <td class="text-end">
-              <v-btn icon variant="text" size="small" @click="openEdit(j)">
-                <v-icon icon="mdi-pencil" size="small" />
-              </v-btn>
-              <v-btn
-                icon
-                variant="text"
-                color="error"
-                size="small"
-                @click="confirmDelete(j)"
-              >
-                <v-icon icon="mdi-delete" size="small" />
-              </v-btn>
-            </td>
-          </tr>
-        </tbody>
-      </v-table>
-      <p
-        v-if="!loading && journals.length === 0"
-        class="text-center py-8 text-medium-emphasis"
+    <v-card
+      v-if="viewMode === 'table'"
+      variant="outlined"
+      class="admin-dergiler-card overflow-hidden"
+    >
+      <v-data-table
+        :headers="tableHeaders"
+        :items="journals"
+        :loading="loading"
+        item-value="id"
+        density="comfortable"
+        :no-data-text="'Henüz dergi yok. Eklemek için yukarıdaki butonu kullanın.'"
+        class="admin-dergiler-table"
       >
-        Henüz dergi yok. Eklemek için yukarıdaki butonu kullanın.
-      </p>
+        <template #item.journal_cover_img="{ item }">
+          <v-avatar size="48" rounded>
+            <v-img
+              v-if="getRow(item).journal_cover_img"
+              :src="getRow(item).journal_cover_img"
+              cover
+            />
+            <v-icon v-else icon="mdi-book-open-variant" />
+          </v-avatar>
+        </template>
+        <template #item.actions="{ item }">
+          <div class="d-flex justify-end ga-1">
+            <v-btn icon variant="text" size="small" @click="openEdit(getRow(item))">
+              <v-icon icon="mdi-pencil" size="small" />
+            </v-btn>
+            <v-btn
+              icon
+              variant="text"
+              color="error"
+              size="small"
+              @click="confirmDelete(getRow(item))"
+            >
+              <v-icon icon="mdi-delete" size="small" />
+            </v-btn>
+          </div>
+        </template>
+      </v-data-table>
     </v-card>
 
     <!-- Card görünümü -->
@@ -100,11 +96,16 @@
               class="bg-grey-lighten-3"
             />
             <div v-else class="d-flex align-center justify-center pa-8 bg-grey-lighten-3">
-              <v-icon icon="mdi-book-open-variant" size="64" class="text-medium-emphasis" />
+              <v-icon
+                icon="mdi-book-open-variant"
+                size="64"
+                class="text-medium-emphasis"
+              />
             </div>
             <v-card-title class="text-body-medium">{{ j.journal_title }}</v-card-title>
             <v-card-subtitle class="text-caption"
-              >Sayı {{ j.journal_volume_number }} · {{ j.publisher_name }}</v-card-subtitle
+              >Sayı {{ j.journal_volume_number }} ·
+              {{ j.publisher_name }}</v-card-subtitle
             >
             <v-spacer />
             <v-card-actions class="pt-0">
@@ -116,42 +117,57 @@
           </v-card>
         </v-col>
       </v-row>
-      <p v-else class="text-center py-8 text-medium-emphasis">
-        Henüz dergi yok.
-      </p>
+      <p v-else class="text-center py-8 text-medium-emphasis">Henüz dergi yok.</p>
     </template>
 
     <!-- List görünümü -->
     <template v-else-if="viewMode === 'list'">
-      <v-list v-if="journals.length > 0" variant="outlined" rounded="lg">
-        <v-list-item
+      <div v-if="journals.length > 0" class="admin-dergiler-list">
+        <v-card
           v-for="j in journals"
           :key="j.id"
-          :prepend-avatar="j.journal_cover_img"
-          :title="j.journal_title"
-          :subtitle="`Sayı ${j.journal_volume_number} · ${j.publisher_name}`"
-          class="mb-2"
-          rounded="lg"
+          variant="outlined"
+          class="admin-dergiler-list-item"
+          rounded="xl"
         >
-          <template #append>
-            <v-btn icon variant="text" size="small" @click.stop="openEdit(j)">
-              <v-icon icon="mdi-pencil" size="small" />
-            </v-btn>
-            <v-btn
-              icon
-              variant="text"
-              color="error"
-              size="small"
-              @click.stop="confirmDelete(j)"
-            >
-              <v-icon icon="mdi-delete" size="small" />
-            </v-btn>
-          </template>
-        </v-list-item>
-      </v-list>
-      <p v-else class="text-center py-8 text-medium-emphasis">
-        Henüz dergi yok.
-      </p>
+          <div
+            class="admin-dergiler-list-item__inner d-flex flex-column align-start flex-sm-row align-sm-center"
+          >
+            <v-avatar size="64" rounded class="admin-dergiler-list-item__avatar">
+              <v-img v-if="j.journal_cover_img" :src="j.journal_cover_img" cover />
+              <v-icon v-else icon="mdi-book-open-variant" size="32" />
+            </v-avatar>
+            <div class="admin-dergiler-list-item__content">
+              <h3 class="admin-dergiler-list-item__title">{{ j.journal_title }}</h3>
+              <p class="admin-dergiler-list-item__meta">
+                Sayı {{ j.journal_volume_number }} · {{ j.publisher_name }}
+              </p>
+            </div>
+            <div class="admin-dergiler-list-item__actions">
+              <v-btn
+                variant="tonal"
+                size="small"
+                prepend-icon="mdi-pencil"
+                rounded="lg"
+                @click="openEdit(j)"
+              >
+                Düzenle
+              </v-btn>
+              <v-btn
+                variant="tonal"
+                color="error"
+                size="small"
+                prepend-icon="mdi-delete"
+                rounded="lg"
+                @click="confirmDelete(j)"
+              >
+                Sil
+              </v-btn>
+            </div>
+          </div>
+        </v-card>
+      </div>
+      <p v-else class="text-center py-8 text-medium-emphasis">Henüz dergi yok.</p>
     </template>
 
     <!-- Ekleme formu - dergilerin altında inline -->
@@ -173,7 +189,7 @@
 
     <!-- Düzenleme dialog -->
     <v-dialog v-model="editDialog" max-width="800" persistent scrollable>
-      <v-card variant="outlined">
+      <v-card variant="outlined" class="admin-dialog-card">
         <v-card-title class="d-flex align-center">
           <span>Dergi Düzenle</span>
           <v-spacer />
@@ -195,7 +211,7 @@
 
     <!-- Silme onay -->
     <v-dialog v-model="deleteDialog" max-width="400" persistent>
-      <v-card variant="outlined">
+      <v-card variant="outlined" class="admin-dialog-card">
         <v-card-title>Dergiyi Sil</v-card-title>
         <v-card-text>
           "{{ deletingJournal?.journal_title }}" dergisini silmek istediğinize emin
@@ -219,6 +235,17 @@ import type { Journal } from "~/interfaces";
 const viewMode = ref<"table" | "card" | "list">("table");
 const { fetchJournals, deleteJournal } = useJournals();
 const journals = ref<Journal[]>([]);
+
+const tableHeaders = [
+  { title: "Kapak", key: "journal_cover_img", sortable: false, width: 80 },
+  { title: "Başlık", key: "journal_title" },
+  { title: "Yayıncı", key: "publisher_name" },
+  { title: "Sayı", key: "journal_volume_number", align: "center" as const },
+  { title: "İşlemler", key: "actions", sortable: false, align: "end" as const },
+];
+
+const getRow = (item: { raw?: Journal } | Journal) =>
+  (item as { raw?: Journal }).raw ?? (item as Journal);
 const loading = ref(true);
 const error = ref("");
 const showAddForm = ref(false);
@@ -245,9 +272,12 @@ const openAdd = () => {
   showAddForm.value = true;
 };
 
-const onAddSaved = () => {
+const { notifySubscribers } = useNotifySubscribers();
+
+const onAddSaved = async (title?: string) => {
   showAddForm.value = false;
-  load();
+  await load();
+  if (title) await notifySubscribers('dergi', title);
 };
 
 const openEdit = (j: Journal) => {
@@ -295,6 +325,105 @@ onMounted(load);
   }
   to {
     opacity: 1;
+  }
+}
+
+/* Tablo - border ve stil */
+.admin-dergiler-card {
+  border: 1px solid rgb(var(--v-theme-primary) / 0.25) !important;
+  border-radius: 16px;
+  overflow: hidden;
+}
+.admin-dergiler-table :deep(.v-table) {
+  border-collapse: separate;
+}
+.admin-dergiler-table :deep(thead th) {
+  background: rgb(var(--v-theme-primary) / 0.08);
+  color: rgb(var(--v-theme-primary));
+  font-weight: 600;
+  font-size: 0.8125rem;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  padding: 14px 16px;
+  border-bottom: 1px solid rgb(var(--v-theme-primary) / 0.2);
+}
+.admin-dergiler-table :deep(tbody td) {
+  padding: 12px 16px;
+  border-bottom: 1px solid rgb(var(--v-theme-primary) / 0.1);
+}
+.admin-dergiler-table :deep(tbody tr:hover) {
+  background: rgb(var(--v-theme-primary) / 0.04);
+}
+.admin-dergiler-table :deep(tbody tr:last-child td) {
+  border-bottom: none;
+}
+.admin-dergiler-table :deep(.v-data-table__loading) {
+  background: rgb(var(--v-theme-primary) / 0.03);
+}
+
+/* List görünümü */
+.admin-dergiler-list {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+.admin-dergiler-list-item {
+  border: 1px solid rgb(var(--v-theme-primary) / 0.2) !important;
+  border-radius: 16px !important;
+  transition: border-color 0.2s, box-shadow 0.2s;
+}
+.admin-dergiler-list-item:hover {
+  border-color: rgb(var(--v-theme-primary) / 0.35) !important;
+  box-shadow: 0 4px 12px rgb(0 0 0 / 0.08);
+}
+.admin-dergiler-list-item__inner {
+  display: flex;
+  align-items: center;
+  gap: 20px;
+  padding: 16px 20px;
+}
+.admin-dergiler-list-item__avatar {
+  flex-shrink: 0;
+  border: 1px solid rgb(var(--v-theme-primary) / 0.15);
+}
+.admin-dergiler-list-item__content {
+  flex: 1;
+  min-width: 0;
+}
+.admin-dergiler-list-item__title {
+  font-size: 1rem;
+  font-weight: 600;
+  margin: 0 0 4px 0;
+  color: inherit;
+}
+.admin-dergiler-list-item__meta {
+  font-size: 0.75rem;
+  color: rgb(var(--v-theme-on-surface));
+  opacity: 0.7;
+  margin: 0;
+}
+.admin-dergiler-list-item__actions {
+  display: flex;
+  gap: 8px;
+  flex-shrink: 0;
+}
+
+/* Dialog kartları - arka plan, border yok */
+.admin-dialog-card {
+  background: rgb(var(--v-theme-surface)) !important;
+  border: none !important;
+}
+
+@media (max-width: 600px) {
+  .admin-dergiler-list-item__inner {
+    flex-wrap: wrap;
+  }
+  .admin-dergiler-list-item__actions {
+    width: 100%;
+    justify-content: flex-end;
+    margin-top: 8px;
+    padding-top: 12px;
+    border-top: 1px solid rgb(var(--v-theme-primary) / 0.1);
   }
 }
 </style>
