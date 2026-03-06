@@ -60,11 +60,12 @@
       <v-alert v-if="emailError" type="error" density="compact" class="mb-3">
         {{ emailError }}
       </v-alert>
+
       <v-btn
         color="primary"
         variant="tonal"
         :loading="emailLoading"
-        class="mb-4"
+        class="mt-2 mb-4"
         @click="$emit('email-save')"
       >
         E-postayı Kaydet
@@ -72,28 +73,36 @@
 
       <v-divider class="my-4" />
 
-      <p class="text-body-small font-weight-medium mb-2">Şifre Değiştir</p>
+      <p class="text-body-small font-weight-medium mb-2">Şifre yenileme linki</p>
+      <p class="text-caption text-medium-emphasis mb-2">
+        E-postanıza şifre sıfırlama linki gönderilir. Linke tıklayarak yeni şifre belirleyebilirsiniz.
+      </p>
       <v-text-field
-        :model-value="newPassword"
-        label="Yeni şifre"
-        :type="showPassword ? 'text' : 'password'"
+        :model-value="resetLinkPassword"
+        label="Mevcut şifre"
+        :type="showResetLinkPassword ? 'text' : 'password'"
         variant="outlined"
         hide-details="auto"
         class="mb-2"
-        :append-inner-icon="showPassword ? 'mdi-eye-off' : 'mdi-eye'"
-        @click:append-inner="$emit('update:showPassword', !showPassword)"
-        @update:model-value="$emit('update:newPassword', $event)"
+        :append-inner-icon="showResetLinkPassword ? 'mdi-eye-off' : 'mdi-eye'"
+        placeholder="Doğrulama için mevcut şifrenizi girin"
+        @click:append-inner="showResetLinkPassword = !showResetLinkPassword"
+        @update:model-value="$emit('update:resetLinkPassword', $event)"
       />
-      <v-alert v-if="passwordError" type="error" density="compact" class="mb-3">
-        {{ passwordError }}
+      <v-alert v-if="resetLinkError" type="error" density="compact" class="mb-2">
+        {{ resetLinkError }}
+      </v-alert>
+      <v-alert v-if="resetLinkSuccess" type="success" density="compact" class="mb-2">
+        Yenileme linki e-postanıza gönderildi. Gelen kutunuzu kontrol edin. Spam veya gereksiz klasörüne de düşmüş olabilir.
       </v-alert>
       <v-btn
-        color="primary"
         variant="tonal"
-        :loading="passwordLoading"
-        @click="$emit('password-save')"
+        color="primary"
+        :loading="resetLinkLoading"
+        prepend-icon="mdi-email-send"
+        @click="$emit('reset-link-request')"
       >
-        Şifreyi Kaydet
+        Yenileme linki gönder
       </v-btn>
     </v-card>
   </div>
@@ -103,6 +112,7 @@
 const authStore = useAuthStore()
 
 const showEmailPassword = ref(false)
+const showResetLinkPassword = ref(false)
 
 defineProps<{
   userProfile: { avatar_url?: string } | null
@@ -111,20 +121,19 @@ defineProps<{
   emailPassword: string
   emailLoading: boolean
   emailError: string
-  newPassword: string
-  showPassword: boolean
-  passwordLoading: boolean
-  passwordError: string
+  resetLinkPassword: string
+  resetLinkLoading: boolean
+  resetLinkError: string
+  resetLinkSuccess: boolean
 }>()
 
 defineEmits<{
   'update:newEmail': [v: string]
   'update:emailPassword': [v: string]
-  'update:newPassword': [v: string]
-  'update:showPassword': [v: boolean]
+  'update:resetLinkPassword': [v: string]
   'avatar-change': [e: Event]
   'email-save': []
-  'password-save': []
+  'reset-link-request': []
 }>()
 
 const avatarInput = ref<HTMLInputElement | null>(null)

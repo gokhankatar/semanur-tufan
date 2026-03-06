@@ -83,7 +83,7 @@
                 {{ resetError }}
               </v-alert>
               <v-alert v-if="resetSuccess" type="success" class="mt-3" density="compact">
-                Sıfırlama bağlantısı e-posta adresinize gönderildi. Gelen kutunuzu kontrol edin.
+                Sıfırlama bağlantısı e-posta adresinize gönderildi. Gelen kutunuzu kontrol edin. Spam veya gereksiz klasörüne de düşmüş olabilir.
               </v-alert>
             </v-card-text>
             <v-card-actions class="pa-4 pt-0">
@@ -307,13 +307,13 @@
                 v-model:email-password="emailPassword"
                 :email-loading="emailLoading"
                 :email-error="emailError"
-                v-model:new-password="newPassword"
-                v-model:show-password="showNewPassword"
-                :password-loading="passwordLoading"
-                :password-error="passwordError"
+                v-model:reset-link-password="resetLinkPassword"
+                :reset-link-loading="resetLinkLoading"
+                :reset-link-error="resetLinkError"
+                :reset-link-success="resetLinkSuccess"
                 @avatar-change="handleAvatarChange"
                 @email-save="handleEmailChange"
-                @password-save="handlePasswordChange"
+                @reset-link-request="handleResetLinkRequest"
               />
               <AdminAyarlar
                 v-else-if="activeSection === 'ayarlar'"
@@ -362,10 +362,10 @@ const theme = useTheme();
 
 const stats = ref({ journalCount: 0, blogCount: 0, calismaCount: 0, todoCount: 0, subscriberCount: 0 });
 const avatarLoading = ref(false);
-const newPassword = ref("");
-const showNewPassword = ref(false);
-const passwordLoading = ref(false);
-const passwordError = ref("");
+const resetLinkPassword = ref("");
+const resetLinkLoading = ref(false);
+const resetLinkError = ref("");
+const resetLinkSuccess = ref(false);
 
 const newEmail = ref("");
 const emailPassword = ref("");
@@ -414,6 +414,9 @@ watch(activeSection, (section) => {
     newEmail.value = authStore.user?.email ?? "";
     emailPassword.value = "";
     emailError.value = "";
+    resetLinkPassword.value = "";
+    resetLinkError.value = "";
+    resetLinkSuccess.value = false;
   }
 });
 
@@ -446,22 +449,30 @@ const handleAvatarChange = async (e: Event) => {
   }
 };
 
-const handlePasswordChange = async () => {
-  if (!newPassword.value || newPassword.value.length < 6) {
-    passwordError.value = "Şifre en az 6 karakter olmalı";
+const handleResetLinkRequest = async () => {
+  if (!resetLinkPassword.value) {
+    resetLinkError.value = "Mevcut şifrenizi girin";
     return;
   }
-  passwordLoading.value = true;
-  passwordError.value = "";
+  const email = authStore.user?.email;
+  if (!email) {
+    resetLinkError.value = "E-posta bulunamadı";
+    return;
+  }
+  resetLinkLoading.value = true;
+  resetLinkError.value = "";
+  resetLinkSuccess.value = false;
   try {
     const { $authActions } = useNuxtApp();
-    await $authActions.updatePassword(newPassword.value);
-    newPassword.value = "";
+    await $authActions.reauthenticate(resetLinkPassword.value);
+    await $authActions.sendPasswordResetEmail(email);
+    resetLinkSuccess.value = true;
+    resetLinkPassword.value = "";
   } catch (e: unknown) {
     const err = e as { message?: string };
-    passwordError.value = err?.message || "Şifre değiştirilemedi.";
+    resetLinkError.value = err?.message || "Link gönderilemedi. Mevcut şifreyi kontrol edin.";
   } finally {
-    passwordLoading.value = false;
+    resetLinkLoading.value = false;
   }
 };
 
