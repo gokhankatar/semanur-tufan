@@ -123,7 +123,14 @@
           <template #append>
             <div class="pa-4">
               <NuxtLink to="/" class="admin-drawer__home">
-                <v-btn variant="tonal" block prepend-icon="mdi-home"> Ana Sayfa </v-btn>
+                <v-btn
+                  variant="elevated"
+                  class="bg-primary"
+                  block
+                  prepend-icon="mdi-home"
+                >
+                  Ana Sayfa
+                </v-btn>
               </NuxtLink>
             </div>
           </template>
@@ -131,6 +138,7 @@
 
         <v-row
           class="mx-auto pt-5 pa-0 pa-lg-5 pa-xl-10 d-flex justify-center align-center ml-lg-15"
+          :dense="display.smAndDown.value"
         >
           <v-app-bar density="compact" class="admin-appbar">
             <v-app-bar-nav-icon
@@ -239,9 +247,10 @@
                 @avatar-change="handleAvatarChange"
                 @password-click="activeSection = 'profil'"
               />
-              <AdminDergiEkle v-else-if="activeSection === 'dergi'" />
-              <AdminBlogEkle v-else-if="activeSection === 'blog'" />
-              <AdminCalismaEkle v-else-if="activeSection === 'calisma'" />
+              <AdminDergiler v-else-if="activeSection === 'dergi'" />
+              <AdminBloglar v-else-if="activeSection === 'blog'" />
+              <AdminCalismalar v-else-if="activeSection === 'calisma'" />
+              <AdminTodo v-else-if="activeSection === 'todo'" />
               <AdminProfil
                 v-else-if="activeSection === 'profil'"
                 :user-profile="userProfile"
@@ -303,7 +312,7 @@ const { uploadAvatar } = useProfileUpload();
 const { getStoredPrimary, setPrimaryForTheme } = useThemeColor();
 const theme = useTheme();
 
-const stats = ref({ journalCount: 0, blogCount: 0, calismaCount: 0 });
+const stats = ref({ journalCount: 0, blogCount: 0, calismaCount: 0, todoCount: 0 });
 const avatarLoading = ref(false);
 const newPassword = ref("");
 const showNewPassword = ref(false);
@@ -540,12 +549,33 @@ const handleLogout = async () => {
   flex: 1;
   padding: 1.5rem 2rem;
   min-width: 0;
+  background: linear-gradient(
+    180deg,
+    rgb(var(--v-theme-primary) / 0.03) 0%,
+    transparent 15%
+  );
 }
 
-/* Admin kartları - tema uyumlu border */
+.v-theme--light .admin-content {
+  background: linear-gradient(
+    180deg,
+    rgb(var(--v-theme-primary) / 0.06) 0%,
+    transparent 12%
+  );
+}
+
+/* Admin kartları - sadece border, arka plan yok */
 .admin-content :deep(.v-card) {
-  border: 1px solid rgb(var(--v-theme-primary) / 0.25);
-  border-radius: 12px;
+  border: 1px solid rgb(var(--v-theme-primary) / 0.2);
+  border-radius: 16px;
+  background: transparent !important;
+  box-shadow: 0 2px 8px rgb(0 0 0 / 0.06);
+  transition: border-color 0.2s, box-shadow 0.2s;
+}
+
+.admin-content :deep(.v-card:hover) {
+  border-color: rgb(var(--v-theme-primary) / 0.35);
+  box-shadow: 0 4px 12px rgb(0 0 0 / 0.08);
 }
 
 /* Avatar menü - geniş, animasyonlu */

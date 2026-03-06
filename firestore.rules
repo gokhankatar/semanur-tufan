@@ -7,7 +7,13 @@ service cloud.firestore {
     match /bloglar/{blogId} {
       allow read, write: if true;
     }
+    match /blogs/{blogId} {
+      allow read, write: if true;
+    }
     match /works/{workId} {
+      allow read, write: if true;
+    }
+    match /todo/{todoId} {
       allow read, write: if true;
     }
     match /users/{userId} {

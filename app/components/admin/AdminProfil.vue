@@ -2,7 +2,7 @@
   <div class="admin-section">
     <h2 class="text-headline-small mb-4">Profil</h2>
 
-    <v-card variant="tonal" class="pa-4 pa-md-6">
+    <v-card variant="outlined" class="pa-4 pa-md-6">
       <!-- Profil fotoğrafı - hover'da kalem ikonu -->
       <div class="d-flex align-center ga-4 mb-4">
         <div

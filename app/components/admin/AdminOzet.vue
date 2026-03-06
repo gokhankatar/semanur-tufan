@@ -4,7 +4,7 @@
 
     <!-- İstatistik kartları -->
     <v-row class="mb-6">
-      <v-col cols="12" sm="6" md="4">
+      <v-col cols="12" sm="6" md="3">
         <div class="admin-ozet__card admin-ozet__card--primary">
           <div class="admin-ozet__card-icon">
             <v-icon icon="mdi-file-pdf-box" size="40" />
@@ -15,7 +15,7 @@
           </div>
         </div>
       </v-col>
-      <v-col cols="12" sm="6" md="4">
+      <v-col cols="12" sm="6" md="3">
         <div class="admin-ozet__card admin-ozet__card--secondary">
           <div class="admin-ozet__card-icon">
             <v-icon icon="mdi-post" size="40" />
@@ -26,7 +26,7 @@
           </div>
         </div>
       </v-col>
-      <v-col cols="12" sm="6" md="4">
+      <v-col cols="12" sm="6" md="3">
         <div class="admin-ozet__card admin-ozet__card--secondary">
           <div class="admin-ozet__card-icon">
             <v-icon icon="mdi-briefcase" size="40" />
@@ -34,6 +34,17 @@
           <div class="admin-ozet__card-content">
             <span class="admin-ozet__card-value">{{ stats.calismaCount }}</span>
             <span class="admin-ozet__card-label">Çalışma</span>
+          </div>
+        </div>
+      </v-col>
+      <v-col cols="12" sm="6" md="3">
+        <div class="admin-ozet__card admin-ozet__card--secondary">
+          <div class="admin-ozet__card-icon">
+            <v-icon icon="mdi-format-list-checks" size="40" />
+          </div>
+          <div class="admin-ozet__card-content">
+            <span class="admin-ozet__card-value">{{ stats.todoCount }}</span>
+            <span class="admin-ozet__card-label">Yapılacak</span>
           </div>
         </div>
       </v-col>
@@ -95,7 +106,7 @@
 const authStore = useAuthStore();
 
 defineProps<{
-  stats: { journalCount: number; blogCount: number; calismaCount: number };
+  stats: { journalCount: number; blogCount: number; calismaCount: number; todoCount: number };
   userProfile: { avatar_url?: string } | null;
   lastLoginFormatted: string;
   avatarLoading: boolean;

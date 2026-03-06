@@ -2,7 +2,7 @@
   <div class="admin-section">
     <h2 class="text-headline-small mb-4">Ayarlar</h2>
 
-    <v-card variant="tonal" class="pa-4 pa-md-6">
+    <v-card variant="outlined" class="pa-4 pa-md-6">
       <p class="text-body-small font-weight-medium mb-3">Primary Renk</p>
 
       <!-- Tema seçimi - önce hangi tema için renk belirleneceği -->

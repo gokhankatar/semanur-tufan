@@ -21,20 +21,49 @@
       <!-- Desktop: overlay content (gradient, badge, title, publisher, summary on hover, keywords) -->
       <template v-if="!display.smAndDown.value">
         <div class="journal-card__gradient" />
-        <div class="journal-card__badge">Sayı {{ journal.journal_volume_number }}</div>
+        <div class="journal-card__badge journal-card__badge--left">Sayı {{ journal.journal_volume_number }}</div>
+        <v-btn
+          v-if="journal.pdf_url"
+          :href="journal.pdf_url"
+          target="_blank"
+          variant="elevated"
+          :size="display.xl.value ? 'small' : 'x-small'"
+          :icon="!display.xl.value ? 'mdi-download' : undefined"
+          :prepend-icon="display.xl.value ? 'mdi-download' : undefined"
+          class="journal-card__download"
+          @click.stop
+        >
+          <template v-if="display.xl.value">İndir</template>
+        </v-btn>
+        <v-chip
+          class="journal-card__views"
+          size="x-small"
+          variant="flat"
+          color="primary"
+          density="compact"
+        >
+          <v-icon icon="mdi-eye-outline" size="12" start />
+          {{ journal.view_count ?? 0 }}
+        </v-chip>
         <div class="journal-card__overlay">
           <p
-            class="journal-card__title text-white text-body-small text-lg-body-medium text-capitalize"
+            class="journal-card__title text-white text-capitalize"
+            :class="display.xl.value ? 'text-body-medium' : 'text-label-small'"
           >
             {{ truncatedTitle }}
           </p>
-          <p class="journal-card__publisher">{{ journal.publisher_name }}</p>
+          <p
+            class="journal-card__publisher"
+            :class="display.xl.value ? 'text-body-small' : 'text-caption'"
+          >
+            {{ journal.publisher_name }}
+          </p>
           <Transition name="summary-fade">
             <div v-show="isHovered" class="journal-card__summary">
               {{ journal.journal_summary }}
             </div>
           </Transition>
-          <div v-if="journal.journal_keywords?.length" class="journal-card__keywords">
+          <div v-if="journal.journal_keywords?.length && display.xl.value" class="journal-card__keywords">
             <span
               v-for="kw in journal.journal_keywords.slice(0, 3)"
               :key="kw"
@@ -49,7 +78,32 @@
 
     <!-- Mobile: title below image -->
     <div v-if="display.smAndDown.value" class="journal-card__below pa-1">
-      <span class="journal-card__number">Sayı {{ journal.journal_volume_number }}</span>
+      <div class="d-flex align-center justify-space-between flex-wrap ga-2">
+        <span class="journal-card__number">Sayı {{ journal.journal_volume_number }}</span>
+        <div class="d-flex align-center ga-2 my-1">
+          <v-btn
+            v-if="journal.pdf_url"
+            :href="journal.pdf_url"
+            target="_blank"
+            variant="tonal"
+            size="x-small"
+            class="rounded"
+            @click.stop
+          >
+          <v-icon icon="mdi-download" size="12" center />
+          </v-btn>
+          <v-chip
+            class="journal-card__views-mobile rounded"
+            size="x-small"
+            variant="tonal"
+            color="primary"
+            density="compact"
+          >
+            <v-icon icon="mdi-eye-outline" size="12" start />
+            {{ journal.view_count ?? 0 }}
+          </v-chip>
+        </div>
+      </div>
       <p class="journal-card__title text-body-small text-capitalize">
         {{ truncatedTitle }}
       </p>
@@ -147,7 +201,6 @@ const setHover = (v: boolean) => {
 .journal-card__badge {
   position: absolute;
   top: 12px;
-  right: 12px;
   background: rgba(105, 240, 174, 0.95);
   color: #0d1421;
   padding: 6px 12px;
@@ -156,6 +209,30 @@ const setHover = (v: boolean) => {
   font-weight: 700;
   letter-spacing: 0.02em;
   z-index: 2;
+}
+
+.journal-card__badge--left {
+  left: 12px;
+}
+
+.journal-card__download {
+  position: absolute;
+  top: 12px;
+  right: 12px;
+  z-index: 2;
+  opacity: 0;
+  transition: opacity 0.25s ease;
+}
+
+.journal-card:hover .journal-card__download {
+  opacity: 1;
+}
+
+.journal-card__views {
+  position: absolute;
+  bottom: 0.5rem;
+  right: 0.75rem;
+  z-index: 3;
 }
 
 .journal-card__overlay {
@@ -218,6 +295,14 @@ const setHover = (v: boolean) => {
   padding: 2px 8px;
   border-radius: 6px;
   margin-bottom: 0.35rem;
+}
+
+.journal-card__download-mobile {
+  min-width: auto;
+}
+
+.journal-card__views-mobile {
+  min-height: 24px;
 }
 
 .journal-card__title--mobile {

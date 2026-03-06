@@ -1,5 +1,5 @@
 <template>
-  <div>
+  <div class="layout-wrap">
     <LayoutThemePersistence />
     <CommonInitial_Loading v-if="isLoading" />
     <template v-else>
@@ -7,6 +7,7 @@
       <main class="main-content" :class="{ 'main-content--home': route.path === '/' }">
         <NuxtPage />
       </main>
+      <LayoutFooter />
 
       <!-- Admin giriş yapıldıysa ana sayfada admin paneline dön butonu -->
       <NuxtLink
@@ -42,9 +43,15 @@ onMounted(() => {
 </script>
 
 <style scoped>
+.layout-wrap {
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
+}
+
 .main-content {
   padding-top: 65px;
-  min-height: 100vh;
+  flex: 1;
   background: rgb(var(--v-theme-background, 13 20 33));
 }
 

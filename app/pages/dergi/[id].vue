@@ -15,17 +15,19 @@
         <div class="d-flex ga-2">
           <v-btn
             variant="tonal"
-            prepend-icon="mdi-download"
+            :icon="display.mdAndDown.value ? 'mdi-download' : undefined"
+            :prepend-icon="!display.mdAndDown.value ? 'mdi-download' : undefined"
             :href="pdfDisplayUrl"
             target="_blank"
             download
-            text="İndir"
+            :text="display.mdAndDown.value ? undefined : 'İndir'"
           />
           <v-btn
             variant="tonal"
-            prepend-icon="mdi-share-variant"
+            :icon="display.mdAndDown.value ? 'mdi-share-variant' : undefined"
+            :prepend-icon="!display.mdAndDown.value ? 'mdi-share-variant' : undefined"
             @click="shareJournal"
-            text="Paylaş"
+            :text="display.mdAndDown.value ? undefined : 'Paylaş'"
           />
         </div>
       </div>
@@ -84,7 +86,8 @@ const VuePdfEmbed = defineAsyncComponent(() => import("vue-pdf-embed"));
 definePageMeta({ ssr: false });
 
 const route = useRoute();
-const { fetchJournalById } = useJournals();
+const display = useDisplay();
+const { fetchJournalById, incrementJournalView } = useJournals();
 const { playPageTurnSound } = usePageTurnSound();
 
 const journal = ref<Journal | null>(null);
@@ -125,6 +128,14 @@ onMounted(async () => {
     if (journal.value && !pdfDisplayUrl.value) {
       console.warn("PDF URL geçersiz (file:// yolları tarayıcıda çalışmaz)");
     }
+    if (journal.value?.id) {
+      const viewedKey = `dergi-viewed-${id}`;
+      if (!sessionStorage.getItem(viewedKey)) {
+        sessionStorage.setItem(viewedKey, "1");
+        await incrementJournalView(id);
+        journal.value = { ...journal.value!, view_count: (journal.value.view_count ?? 0) + 1 };
+      }
+    }
   } catch (e) {
     console.error(e);
   } finally {
@@ -162,7 +173,21 @@ const shareJournal = async () => {
 };
 
 const copyToClipboard = async (text: string) => {
-  await navigator.clipboard.writeText(text);
+  if (navigator.clipboard?.writeText) {
+    await navigator.clipboard.writeText(text);
+    return;
+  }
+  const textarea = document.createElement('textarea');
+  textarea.value = text;
+  textarea.style.position = 'fixed';
+  textarea.style.opacity = '0';
+  document.body.appendChild(textarea);
+  textarea.select();
+  try {
+    document.execCommand('copy');
+  } finally {
+    document.body.removeChild(textarea);
+  }
 };
 </script>
 

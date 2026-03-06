@@ -1,12 +1,11 @@
 <template>
   <div class="admin-section">
-    <h2 class="text-headline-small mb-4">Dergi Ekle</h2>
+    <h2 v-if="!embedded" class="text-headline-small mb-4">Dergi Ekle</h2>
 
     <!-- Adım 1: PDF Yükle -->
     <v-card
       v-if="!uploadedPdfUrl"
-      variant="elevated"
-      :elevation="5"
+      variant="outlined"
       class="pa-4 pa-md-6 position-relative"
     >
       <v-overlay
@@ -74,7 +73,7 @@
       persistent
       transition="dialog-transition"
     >
-      <v-card variant="elevated" class="pa-4 pa-md-6 position-relative">
+      <v-card variant="outlined" class="pa-4 pa-md-6 position-relative">
         <v-overlay
           :model-value="loading"
           contained
@@ -269,6 +268,8 @@
 <script setup lang="ts">
 import type { Journal } from "~/interfaces";
 
+defineProps<{ embedded?: boolean }>();
+const emit = defineEmits<{ saved: [] }>();
 const display = useDisplay();
 const { addJournal } = useJournals();
 const { uploadFile } = useProfileUpload();
@@ -462,6 +463,7 @@ const handleSubmitDetails = async () => {
 
     success.value = true;
     closeDetailsDialog();
+    emit('saved');
   } catch (e: unknown) {
     const err = e as { message?: string };
     error.value = err?.message || "Dergi eklenirken bir hata oluştu.";
