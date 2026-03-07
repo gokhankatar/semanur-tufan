@@ -5,99 +5,117 @@
     </div>
 
     <template v-else-if="journal">
-      <div
-        class="dergi-header d-flex flex-wrap align-center justify-space-between ga-4 mb-6"
-        :class="{ 'dergi-header--mobile': isMobile }"
-      >
-        <div class="dergi-header__info">
-          <h1 class="text-headline-large mb-1">{{ journal.journal_title }}</h1>
-          <p class="text-body-medium text-medium-emphasis">
-            {{ journal.publisher_name }} · Sayı {{ journal.journal_volume_number }}
-          </p>
-        </div>
-        <div class="dergi-header__actions d-flex ga-2">
+      <div class="dergi-header-wrapper mb-5">
+        <div class="dergi-header" :class="{ 'dergi-header--mobile': isMobile }">
           <v-btn
-            variant="tonal"
-            :icon="display.mdAndDown.value ? 'mdi-download' : undefined"
-            :prepend-icon="!display.mdAndDown.value ? 'mdi-download' : undefined"
-            :href="pdfDisplayUrl"
-            target="_blank"
-            download
-            :text="display.mdAndDown.value ? undefined : 'İndir'"
-            rounded="lg"
-            class="dergi-action-btn"
+            variant="text"
+            prepend-icon="mdi-arrow-left"
+            text="Geri dön"
+            size="small"
+            color="primary"
+            class="dergi-header__back mb-3 mb-md-0"
+            @click="router.back()"
           />
-          <v-menu location="bottom" :close-on-content-click="true">
-            <template #activator="{ props }">
+          <div class="dergi-header__main">
+            <div class="dergi-header__info">
+              <h1 class="dergi-header__title">{{ journal.journal_title }}</h1>
+              <p class="dergi-header__meta text-medium-emphasis">
+                {{ journal.publisher_name }} · Sayı {{ journal.journal_volume_number }}
+              </p>
+            </div>
+            <div class="dergi-header__actions">
               <v-btn
-                v-bind="props"
-                variant="tonal"
-                :icon="display.mdAndDown.value ? 'mdi-share-variant' : undefined"
-                :prepend-icon="!display.mdAndDown.value ? 'mdi-share-variant' : undefined"
-                :text="display.mdAndDown.value ? undefined : 'Paylaş'"
+                class="dergi-action-btn dergi-action-btn--download"
+                variant="flat"
+                :icon="display.mdAndDown.value ? 'mdi-download' : undefined"
+                :prepend-icon="!display.mdAndDown.value ? 'mdi-download' : undefined"
+                :href="pdfDisplayUrl"
+                target="_blank"
+                download
+                :block="display.xs.value"
+                :text="display.mdAndDown.value ? undefined : 'İndir'"
                 rounded="lg"
-                class="dergi-action-btn"
+                size="default"
               />
-            </template>
-            <v-card min-width="220" rounded="lg" class="share-menu-card">
-              <v-card-text class="pa-3">
-                <p class="text-body-small text-medium-emphasis mb-3">Platformda paylaş</p>
-                <div class="d-flex flex-wrap ga-2">
+              <v-menu location="bottom" :close-on-content-click="true">
+                <template #activator="{ props }">
                   <v-btn
-                    icon
-                    variant="tonal"
-                    size="small"
-                    title="X (Twitter)"
-                    @click="shareTo('twitter')"
-                  >
-                    <v-icon>mdi-twitter</v-icon>
-                  </v-btn>
-                  <v-btn
-                    icon
-                    variant="tonal"
-                    size="small"
-                    title="Facebook"
-                    @click="shareTo('facebook')"
-                  >
-                    <v-icon>mdi-facebook</v-icon>
-                  </v-btn>
-                  <v-btn
-                    icon
-                    variant="tonal"
-                    size="small"
-                    title="WhatsApp"
-                    @click="shareTo('whatsapp')"
-                  >
-                    <v-icon>mdi-whatsapp</v-icon>
-                  </v-btn>
-                  <v-btn
-                    icon
-                    variant="tonal"
-                    size="small"
-                    title="LinkedIn"
-                    @click="shareTo('linkedin')"
-                  >
-                    <v-icon>mdi-linkedin</v-icon>
-                  </v-btn>
-                </div>
-                <v-divider class="my-2" />
-                <v-btn
-                  block
-                  variant="text"
-                  size="small"
-                  prepend-icon="mdi-link-variant"
-                  @click="copyShareLink"
-                >
-                  Linki kopyala
-                </v-btn>
-              </v-card-text>
-            </v-card>
-          </v-menu>
+                    v-bind="props"
+                    class="dergi-action-btn dergi-action-btn--share"
+                    variant="flat"
+                    :block="display.xs.value"
+                    :icon="display.mdAndDown.value ? 'mdi-share-variant' : undefined"
+                    :prepend-icon="
+                      !display.mdAndDown.value ? 'mdi-share-variant' : undefined
+                    "
+                    :text="display.mdAndDown.value ? undefined : 'Paylaş'"
+                    rounded="lg"
+                    size="default"
+                  />
+                </template>
+                <v-card min-width="220" rounded="lg" class="share-menu-card">
+                  <v-card-text class="pa-3">
+                    <p class="text-body-small text-medium-emphasis mb-3">
+                      Platformda paylaş
+                    </p>
+                    <div class="d-flex flex-wrap ga-2">
+                      <v-btn
+                        icon
+                        variant="tonal"
+                        size="small"
+                        title="X (Twitter)"
+                        @click="shareTo('twitter')"
+                      >
+                        <v-icon>mdi-twitter</v-icon>
+                      </v-btn>
+                      <v-btn
+                        icon
+                        variant="tonal"
+                        size="small"
+                        title="Facebook"
+                        @click="shareTo('facebook')"
+                      >
+                        <v-icon>mdi-facebook</v-icon>
+                      </v-btn>
+                      <v-btn
+                        icon
+                        variant="tonal"
+                        size="small"
+                        title="WhatsApp"
+                        @click="shareTo('whatsapp')"
+                      >
+                        <v-icon>mdi-whatsapp</v-icon>
+                      </v-btn>
+                      <v-btn
+                        icon
+                        variant="tonal"
+                        size="small"
+                        title="LinkedIn"
+                        @click="shareTo('linkedin')"
+                      >
+                        <v-icon>mdi-linkedin</v-icon>
+                      </v-btn>
+                    </div>
+                    <v-divider class="my-2" />
+                    <v-btn
+                      block
+                      variant="text"
+                      size="small"
+                      prepend-icon="mdi-link-variant"
+                      @click="copyShareLink"
+                    >
+                      Linki kopyala
+                    </v-btn>
+                  </v-card-text>
+                </v-card>
+              </v-menu>
+            </div>
+          </div>
         </div>
       </div>
 
       <v-card
-        variant="tonal"
+        variant="elevated"
         class="pdf-container rounded-lg overflow-hidden"
         elevation="0"
       >
@@ -245,18 +263,58 @@
             class="text-caption text-medium-emphasis text-center mt-2 mb-0 pdf-keyboard-hint"
           >
             <template v-if="isMobile">Sürükleyerek sayfa değiştir</template>
-            <template v-else
-              >Klavye: <kbd>←</kbd> <kbd>→</kbd> önceki/sonraki · <kbd>Home</kbd> ilk ·
-              <kbd>End</kbd> son · Sürükle</template
-            >
+            <template v-else>
+              Klavye:
+              <v-hotkey keys="arrowleft" variant="elevated" inline />
+              <v-hotkey keys="arrowright" variant="elevated" inline />
+              önceki/sonraki ·
+              <v-hotkey keys="home" variant="elevated" inline />
+              ilk ·
+              <v-hotkey keys="end" variant="elevated" inline />
+              son · Sürükle
+            </template>
           </p>
+
+          <div
+            v-if="display.mdAndUp.value && pdfLoaded && pageThumbnails.length > 0"
+            class="pdf-thumbnails pa-3"
+          >
+            <p class="text-caption text-medium-emphasis mb-2">Yakın sayfalar</p>
+            <div class="pdf-thumbnails__strip">
+              <button
+                v-for="p in pageThumbnails"
+                :key="p"
+                type="button"
+                class="pdf-thumbnail"
+                :class="{
+                  'pdf-thumbnail--active':
+                    currentPage === p || (rightPage && rightPage === p),
+                }"
+                @click="goToPage(p)"
+              >
+                <VuePdfEmbed
+                  :source="pdfDisplayUrl"
+                  :page="p"
+                  :width="72"
+                  class="pdf-thumbnail__canvas"
+                />
+                <span class="pdf-thumbnail__label">{{ p }}</span>
+              </button>
+            </div>
+          </div>
         </div>
       </v-card>
     </template>
 
     <v-alert v-else type="error" class="ma-4"> Dergi bulunamadı. </v-alert>
 
-    <v-snackbar v-model="copySnackbar" color="success" :timeout="2500" location="bottom" rounded="lg">
+    <v-snackbar
+      v-model="copySnackbar"
+      color="success"
+      :timeout="2500"
+      location="bottom"
+      rounded="lg"
+    >
       Link panoya kopyalandı
     </v-snackbar>
   </div>
@@ -271,6 +329,7 @@ const VuePdfEmbed = defineAsyncComponent(() => import("vue-pdf-embed"));
 definePageMeta({ ssr: false });
 
 const route = useRoute();
+const router = useRouter();
 const display = useDisplay();
 const { fetchJournalById, incrementJournalView } = useJournals();
 const { playPageTurnSound } = usePageTurnSound();
@@ -330,6 +389,16 @@ const canGoNext = computed(() => {
   return isMobile.value ? currentPage.value < max : currentPage.value + 2 <= max;
 });
 
+/** Önceki 10 + mevcut + sonraki 10 (max 21) — sayfa değiştikçe güncellenir, alt alan daha dolu */
+const pageThumbnails = computed(() => {
+  const max = pageCount.value || 0;
+  const cur = currentPage.value;
+  if (max < 1) return [];
+  const start = Math.max(1, cur - 10);
+  const end = Math.min(max, cur + 10);
+  return Array.from({ length: end - start + 1 }, (_, i) => start + i);
+});
+
 const SWIPE_THRESHOLD = 50;
 
 const swipeStart = ref<{ x: number; y: number } | null>(null);
@@ -386,7 +455,9 @@ useHead({
   title: () => journal.value?.journal_title ?? "Dergi",
   meta: () => {
     const j = journal.value;
-    const desc = j?.journal_summary || `${j?.journal_title} - Gökgerdan Dergisi Sayı ${j?.journal_volume_number}`;
+    const desc =
+      j?.journal_summary ||
+      `${j?.journal_title} - Gökgerdan Dergisi Sayı ${j?.journal_volume_number}`;
     const img = j?.journal_cover_img || `${siteUrl}/images/logo_big.png`;
     const url = `${siteUrl}/dergi/${route.params.id}`;
     return [
@@ -470,7 +541,9 @@ const shareTo = (platform: "twitter" | "facebook" | "whatsapp" | "linkedin") => 
   const encodedUrl = encodeURIComponent(url);
   const whatsappText = encodeURIComponent(`${title}\n\n${url}`);
   const urls: Record<string, string> = {
-    twitter: `https://twitter.com/intent/tweet?url=${encodedUrl}&text=${encodeURIComponent(title)}`,
+    twitter: `https://twitter.com/intent/tweet?url=${encodedUrl}&text=${encodeURIComponent(
+      title
+    )}`,
     facebook: `https://www.facebook.com/sharer/sharer.php?u=${encodedUrl}`,
     whatsapp: `https://wa.me/?text=${whatsappText}`,
     linkedin: `https://www.linkedin.com/sharing/share-offsite/?url=${encodedUrl}`,
@@ -507,6 +580,112 @@ const copyToClipboard = async (text: string) => {
 .share-menu-card {
   box-shadow: 0 8px 32px rgba(0, 0, 0, 0.2);
 }
+
+.dergi-header-wrapper {
+  max-width: 1200px;
+  margin: 0 auto;
+}
+.dergi-header {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+}
+.dergi-header__back {
+  align-self: flex-start;
+}
+.dergi-header__main {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 1rem;
+  padding: 1rem 1.25rem;
+  background: rgba(var(--v-theme-surface-variant), 0.3);
+  border-radius: 12px;
+  border: 1px solid rgba(var(--v-border-color), var(--v-border-opacity));
+}
+.dergi-header__info {
+  flex: 1;
+  min-width: 0;
+}
+.dergi-header__title {
+  font-size: 1.25rem;
+  font-weight: 600;
+  line-height: 1.35;
+  margin: 0 0 0.25rem 0;
+  letter-spacing: -0.01em;
+}
+.dergi-header__meta {
+  font-size: 0.875rem;
+  margin: 0;
+}
+.dergi-header__actions {
+  display: flex;
+  gap: 0.5rem;
+  flex-shrink: 0;
+}
+.dergi-header__actions .dergi-action-btn {
+  flex: 1 1 0;
+  min-width: 110px;
+}
+.dergi-header--mobile .dergi-header__main {
+  flex-direction: column;
+  padding: 1rem;
+}
+.dergi-header--mobile .dergi-header__title {
+  font-size: 1.125rem;
+}
+.dergi-header--mobile .dergi-header__actions {
+  width: 100%;
+  justify-content: stretch;
+}
+.dergi-header--mobile .dergi-header__actions .v-btn {
+  flex: 1;
+  min-height: 48px;
+}
+
+/* xs: butonlar tam genişlik */
+@media (max-width: 599px) {
+  .dergi-header__actions {
+    flex-direction: column;
+    width: 100%;
+  }
+  .dergi-header__actions .dergi-action-btn {
+    width: 100% !important;
+    flex: 1 1 auto;
+    min-width: 100%;
+  }
+}
+
+.dergi-action-btn {
+  min-height: 44px !important;
+  padding-inline: 1.25rem !important;
+  font-weight: 600 !important;
+  text-transform: none !important;
+  color: rgb(255, 255, 255) !important;
+  box-shadow: 0 4px 14px rgba(0, 0, 0, 0.15) !important;
+  transition: transform 0.2s, box-shadow 0.2s !important;
+}
+.dergi-action-btn:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.2) !important;
+}
+.dergi-action-btn--download {
+  background: linear-gradient(135deg, #6366f1 0%, #8b5cf6 50%, #a855f7 100%) !important;
+}
+.dergi-action-btn--download:hover {
+  background: linear-gradient(135deg, #5558e3 0%, #7c3aed 50%, #9333ea 100%) !important;
+}
+.dergi-action-btn--share {
+  background: linear-gradient(135deg, #0ea5e9 0%, #06b6d4 50%, #14b8a6 100%) !important;
+}
+.dergi-action-btn--share:hover {
+  background: linear-gradient(135deg, #0284c7 0%, #0891b2 50%, #0d9488 100%) !important;
+}
+.dergi-action-btn :deep(.v-icon) {
+  color: inherit !important;
+}
+
 .pdf-container {
   max-width: 1200px;
   margin: 0 auto;
@@ -531,22 +710,6 @@ const copyToClipboard = async (text: string) => {
   .dergi-viewer {
     padding-left: 0.75rem !important;
     padding-right: 0.75rem !important;
-  }
-  .dergi-header--mobile {
-    flex-direction: column;
-    align-items: stretch;
-    gap: 1rem;
-  }
-  .dergi-header--mobile .dergi-header__info h1 {
-    font-size: 1.5rem;
-  }
-  .dergi-header--mobile .dergi-header__actions {
-    justify-content: stretch;
-    width: 100%;
-  }
-  .dergi-header--mobile .dergi-action-btn {
-    flex: 1;
-    min-height: 48px;
   }
   .pdf-container {
     max-width: 100%;
@@ -676,15 +839,6 @@ const copyToClipboard = async (text: string) => {
   width: 100% !important;
   max-width: 100% !important;
 }
-.pdf-controls kbd {
-  display: inline-block;
-  padding: 2px 6px;
-  font-size: 0.7em;
-  font-family: inherit;
-  background: rgba(0, 0, 0, 0.08);
-  border-radius: 6px;
-  border: 1px solid rgba(0, 0, 0, 0.12);
-}
 .pdf-page {
   width: 100%;
   max-width: 100%;
@@ -718,5 +872,59 @@ const copyToClipboard = async (text: string) => {
     opacity: 1;
     transform: perspective(1200px) rotateY(0) scale(1);
   }
+}
+
+.pdf-thumbnails {
+  border-top: 1px solid rgba(var(--v-border-color), var(--v-border-opacity));
+  background: rgba(0, 0, 0, 0.02);
+}
+.pdf-thumbnails__strip {
+  display: flex;
+  gap: 0.5rem;
+  overflow-x: auto;
+  padding-bottom: 0.25rem;
+  scrollbar-width: thin;
+}
+.pdf-thumbnails__strip::-webkit-scrollbar {
+  height: 6px;
+}
+.pdf-thumbnails__strip::-webkit-scrollbar-thumb {
+  background: rgba(0, 0, 0, 0.2);
+  border-radius: 3px;
+}
+.pdf-thumbnail {
+  flex-shrink: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.25rem;
+  padding: 0.25rem;
+  border: 2px solid transparent;
+  border-radius: 8px;
+  background: rgba(255, 255, 255, 0.6);
+  cursor: pointer;
+  transition: border-color 0.2s, background 0.2s;
+}
+.pdf-thumbnail:hover {
+  background: rgba(255, 255, 255, 0.9);
+  border-color: rgba(var(--v-theme-primary), 0.4);
+}
+.pdf-thumbnail--active {
+  border-color: rgb(var(--v-theme-primary));
+  background: rgba(var(--v-theme-primary), 0.08);
+}
+.pdf-thumbnail__canvas {
+  border-radius: 4px;
+  overflow: hidden;
+  box-shadow: 0 1px 4px rgba(0, 0, 0, 0.1);
+}
+.pdf-thumbnail__canvas :deep(canvas) {
+  display: block;
+  border-radius: 4px;
+}
+.pdf-thumbnail__label {
+  font-size: 0.7rem;
+  font-weight: 500;
+  color: rgba(0, 0, 0, 0.7);
 }
 </style>
