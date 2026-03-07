@@ -12,12 +12,12 @@ useHead({
     {
       name: "description",
       content:
-        "Gökgerdan Dergisi - Dergi yazarlığı, blog ve sanatsal çalışmalar. Semanur Tufan'ın edebiyat ve sanat dünyası.",
+        "Gökgerdan Dergisi - Dergi yazarlığı, blog ve sanatsal çalışmalar. gokgerdandergisi.com | Semanur Tufan'ın edebiyat ve sanat dünyası.",
     },
     {
       name: "keywords",
       content:
-        "Gökgerdan Dergisi, dergi, blog, edebiyat, sanat, Semanur Tufan, Türk edebiyatı",
+        "Gökgerdan Dergisi, gokgerdan dergisi, gokgerdandergisi, dergi, blog, edebiyat, sanat, Semanur Tufan, Türk edebiyatı",
     },
     { property: "og:type", content: "website" },
     { property: "og:site_name", content: "Gökgerdan Dergisi" },
@@ -40,6 +40,7 @@ useHead({
             "@type": "Organization",
             "@id": `${siteUrl}/#organization`,
             name: "Gökgerdan Dergisi",
+            alternateName: ["gokgerdan dergisi", "gokgerdandergisi"],
             url: siteUrl,
             logo: { "@type": "ImageObject", url: `${siteUrl}/images/logo_big.png` },
           },
@@ -48,6 +49,7 @@ useHead({
             "@id": `${siteUrl}/#website`,
             url: siteUrl,
             name: "Gökgerdan Dergisi",
+            alternateName: ["gokgerdan dergisi", "gokgerdandergisi"],
             description: "Dergi yazarlığı, blog ve sanatsal çalışmalar",
             publisher: { "@id": `${siteUrl}/#organization` },
             inLanguage: "tr-TR",
