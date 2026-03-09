@@ -66,7 +66,7 @@
         variant="elevated"
         prepend-icon="mdi-file-document-edit-outline"
         text="Eser Gönder"
-        size="large"
+        :size="display.smAndDown ? 'small' : 'large'"
         rounded="xl"
         @click="eserDialog = true"
       />
