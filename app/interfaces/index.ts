@@ -1,3 +1,5 @@
+import type { JournalComment } from './journalComment'
+
 export interface Journal {
   id?: string
   journal_cover_img: string
@@ -9,6 +11,11 @@ export interface Journal {
   publisher_name: string
   view_count?: number
   created_at?: { seconds: number; nanoseconds: number }
+  /** Kullanıcıdan gelen eser talebinden oluşturulduysa */
+  sender_name?: string
+  sender_email?: string
+  /** Onaylanmış yorumlar */
+  comments?: JournalComment[]
 }
 
 export interface Blog {

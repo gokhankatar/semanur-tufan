@@ -48,16 +48,36 @@ export function useAdminStats() {
     }
   }
 
+  const fetchArtworkCount = async (): Promise<number> => {
+    try {
+      const snapshot = await getCountFromServer(collection($firestore, 'incoming_artwork_requests'))
+      return snapshot.data().count
+    } catch {
+      return 0
+    }
+  }
+
+  const fetchCommentCount = async (): Promise<number> => {
+    try {
+      const snapshot = await getCountFromServer(collection($firestore, 'incoming_comments'))
+      return snapshot.data().count
+    } catch {
+      return 0
+    }
+  }
+
   const fetchAllStats = async () => {
-    const [journalCount, blogCount, calismaCount, todoCount, subscriberCount] = await Promise.all([
+    const [journalCount, blogCount, calismaCount, todoCount, subscriberCount, artworkCount, commentCount] = await Promise.all([
       fetchJournalCount(),
       fetchBlogCount(),
       fetchCalismaCount(),
       fetchTodoCount(),
       fetchSubscriberCount(),
+      fetchArtworkCount(),
+      fetchCommentCount(),
     ])
-    return { journalCount, blogCount, calismaCount, todoCount, subscriberCount }
+    return { journalCount, blogCount, calismaCount, todoCount, subscriberCount, artworkCount, commentCount }
   }
 
-  return { fetchJournalCount, fetchBlogCount, fetchCalismaCount, fetchTodoCount, fetchSubscriberCount, fetchAllStats }
+  return { fetchJournalCount, fetchBlogCount, fetchCalismaCount, fetchTodoCount, fetchSubscriberCount, fetchArtworkCount, fetchCommentCount, fetchAllStats }
 }

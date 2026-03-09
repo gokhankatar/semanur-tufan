@@ -304,6 +304,17 @@
           </div>
         </div>
       </v-card>
+
+      <!-- Yorumlar -->
+      <div v-if="journal" class="dergi-yorumlar mt-6" style="max-width: 1200px; margin-inline: auto">
+        <DergiYorumBolumu
+          :comments="journal.comments ?? []"
+          :journal-id="journal.id!"
+          :journal-title="journal.journal_title"
+          @success="onYorumSuccess"
+          @error="onYorumError"
+        />
+      </div>
     </template>
 
     <v-alert v-else type="error" class="ma-4"> Dergi bulunamadı. </v-alert>
@@ -316,6 +327,16 @@
       rounded="lg"
     >
       Link panoya kopyalandı
+    </v-snackbar>
+    <v-snackbar
+      v-model="yorumSnackbar"
+      :color="yorumSnackbarError ? 'error' : 'success'"
+      :timeout="3500"
+      location="bottom"
+      rounded="lg"
+      @update:model-value="(v) => !v && (yorumSnackbarError = false)"
+    >
+      {{ yorumSnackbarMsg }}
     </v-snackbar>
   </div>
 </template>
@@ -552,6 +573,20 @@ const shareTo = (platform: "twitter" | "facebook" | "whatsapp" | "linkedin") => 
 };
 
 const copySnackbar = ref(false);
+const yorumSnackbar = ref(false);
+const yorumSnackbarError = ref(false);
+const yorumSnackbarMsg = ref("");
+
+const onYorumSuccess = () => {
+  yorumSnackbarMsg.value = "Yorumunuz gönderildi. Onay sonrası yayınlanacaktır.";
+  yorumSnackbar.value = true;
+};
+const onYorumError = (msg: string) => {
+  yorumSnackbarMsg.value = msg;
+  yorumSnackbarError.value = true;
+  yorumSnackbar.value = true;
+};
+
 const copyShareLink = async () => {
   await copyToClipboard(shareData.value.url);
   copySnackbar.value = true;

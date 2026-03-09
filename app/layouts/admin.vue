@@ -1,9 +1,8 @@
 <template>
-  <div>
-    <LayoutThemePersistence />
-    <template v-if="!authStore.loading">
-      <!-- Giriş yapılmamışsa sadece login formu -->
-      <div v-if="!authStore.isLoggedIn" class="admin-login-wrapper">
+  <LayoutThemePersistence />
+  <template v-if="!authStore.loading">
+    <!-- Giriş yapılmamışsa sadece login formu -->
+    <div v-if="!authStore.isLoggedIn" class="admin-login-wrapper">
         <v-card class="admin-login-card w-100" max-width="400" variant="tonal">
           <v-card-title class="text-headline-small pa-4">Admin Girişi</v-card-title>
           <v-card-text class="pa-6 pt-0">
@@ -106,9 +105,9 @@
         </NuxtLink>
       </div>
 
-      <!-- Giriş yapılmış ve admin ise panel -->
-      <template v-else-if="authStore.isAdmin">
-        <v-navigation-drawer
+    <!-- Giriş yapılmış ve admin ise panel - drawer ve main v-app'in direkt çocuğu -->
+    <template v-else-if="authStore.isAdmin">
+      <v-navigation-drawer
           v-model="drawer"
           :permanent="!display.mdAndDown.value"
           :temporary="display.mdAndDown.value"
@@ -183,10 +182,8 @@
           </template>
         </v-navigation-drawer>
 
-        <v-row
-          class="mx-auto pt-5 pa-0 pa-lg-5 pa-xl-10 d-flex justify-center align-center ml-lg-15"
-          :dense="display.smAndDown.value"
-        >
+        <v-main class="admin-main">
+          <div class="admin-main-inner">
           <v-app-bar density="compact" class="admin-appbar">
             <v-app-bar-nav-icon
               v-if="display.mdAndDown.value"
@@ -283,7 +280,6 @@
             </v-menu>
           </v-app-bar>
 
-          <v-col cols="12">
             <div class="admin-content">
               <AdminOzet
                 v-if="activeSection === 'ozet'"
@@ -292,13 +288,15 @@
                 :last-login-formatted="lastLoginFormatted"
                 :avatar-loading="avatarLoading"
                 @avatar-change="handleAvatarChange"
-                @password-click="activeSection = 'profil'"
+                @navigate="activeSection = $event"
               />
               <AdminDergiler v-else-if="activeSection === 'dergi'" />
               <AdminBloglar v-else-if="activeSection === 'blog'" />
               <AdminCalismalar v-else-if="activeSection === 'calisma'" />
               <AdminTodo v-else-if="activeSection === 'todo'" />
               <AdminAboneler v-else-if="activeSection === 'aboneler'" />
+              <AdminEserTalepleri v-else-if="activeSection === 'eserler'" />
+              <AdminGelenYorumlar v-else-if="activeSection === 'yorumlar'" />
               <AdminProfil
                 v-else-if="activeSection === 'profil'"
                 :user-profile="userProfile"
@@ -321,24 +319,23 @@
                 v-model:primary-theme="primaryTheme"
               />
             </div>
-          </v-col>
-        </v-row>
-      </template>
+          </div>
+      </v-main>
+    </template>
 
-      <!-- Giriş yapılmış ama admin değilse -->
-      <v-container v-else class="fill-height">
+    <!-- Giriş yapılmış ama admin değilse -->
+    <v-container v-else class="fill-height">
         <v-alert type="warning" variant="tonal" class="text-center">
           Bu sayfaya erişim yetkiniz yok.
           <template #append>
             <v-btn variant="text" to="/">Ana Sayfaya Dön</v-btn>
           </template>
-        </v-alert>
-      </v-container>
-    </template>
+      </v-alert>
+    </v-container>
+  </template>
 
-    <div v-else class="d-flex justify-center align-center fill-height">
-      <v-progress-circular indeterminate color="primary" size="64" />
-    </div>
+  <div v-else class="d-flex justify-center align-center fill-height">
+    <v-progress-circular indeterminate color="primary" size="64" />
   </div>
 </template>
 
@@ -360,7 +357,7 @@ const { uploadAvatar } = useProfileUpload();
 const { getStoredPrimary, setPrimaryForTheme } = useThemeColor();
 const theme = useTheme();
 
-const stats = ref({ journalCount: 0, blogCount: 0, calismaCount: 0, todoCount: 0, subscriberCount: 0 });
+const stats = ref({ journalCount: 0, blogCount: 0, calismaCount: 0, todoCount: 0, subscriberCount: 0, artworkCount: 0, commentCount: 0 });
 const avatarLoading = ref(false);
 const resetLinkPassword = ref("");
 const resetLinkLoading = ref(false);
@@ -432,6 +429,27 @@ watch(
   },
   { immediate: true }
 );
+
+const forceLayoutRecalc = () => {
+  if (typeof window === "undefined") return;
+  nextTick(() => {
+    requestAnimationFrame(() => {
+      window.dispatchEvent(new Event("resize"));
+    });
+  });
+};
+
+watch(
+  () => authStore.isAdmin && !authStore.loading,
+  (show) => {
+    if (show) forceLayoutRecalc();
+  },
+  { immediate: true }
+);
+
+onMounted(() => {
+  if (authStore.isAdmin && !authStore.loading) forceLayoutRecalc();
+});
 
 const handleAvatarChange = async (e: Event) => {
   const input = e.target as HTMLInputElement;
@@ -640,25 +658,61 @@ const handleLogout = async () => {
 
 .admin-main {
   background: rgb(var(--v-theme-background));
+  min-height: 100vh;
+  width: 100% !important;
+  max-width: none !important;
+  flex: 1 1 auto !important;
+  min-width: 0 !important;
+}
+.admin-main,
+.admin-main-inner,
+.admin-content {
+  max-width: none !important;
+  width: 100% !important;
 }
 
-.admin-main :deep(.v-main__wrap) {
+.admin-main-inner {
   display: flex;
   flex-direction: column;
+  align-items: stretch;
+  justify-content: flex-start;
   width: 100%;
+  max-width: none;
+  min-width: 0;
+  padding: 1rem;
+  box-sizing: border-box;
+}
+.admin-main-inner > * {
+  max-width: none !important;
 }
 
 .admin-content {
-  width: 100%;
-  max-width: 100%;
+  width: 100% !important;
+  max-width: none !important;
   flex: 1;
-  padding: 1.5rem 2rem;
+  padding: 0;
   min-width: 0;
+  box-sizing: border-box;
+  text-align: left;
+  display: block;
   background: linear-gradient(
     180deg,
     rgb(var(--v-theme-primary) / 0.03) 0%,
     transparent 15%
   );
+}
+.admin-content > * {
+  max-width: none !important;
+  width: 100% !important;
+}
+/* Admin içerik - tam genişlik, sol üst hizalı */
+.admin-content :deep(.v-row) {
+  justify-content: flex-start !important;
+  max-width: none !important;
+}
+.admin-content :deep(.v-container) {
+  max-width: none !important;
+  width: 100% !important;
 }
 
 .v-theme--light .admin-content {
@@ -669,13 +723,26 @@ const handleLogout = async () => {
   );
 }
 
-/* Admin kartları - sadece border, arka plan yok */
+/* Admin kartları - border, hafif arka plan (AdminOzet kendi verir) */
 .admin-content :deep(.v-card) {
   border: 1px solid rgb(var(--v-theme-primary) / 0.2);
   border-radius: 16px;
-  background: transparent !important;
   box-shadow: 0 2px 8px rgb(0 0 0 / 0.06);
   transition: border-color 0.2s, box-shadow 0.2s;
+}
+/* AdminOzet dışı kartlar - şeffaf arka plan */
+.admin-content :deep(.v-card:not([class*="admin-ozet__"])) {
+  background: transparent !important;
+}
+
+/* AdminOzet kartları - dark modda BELİRGİN arka plan (Vuetify override) */
+.v-theme--dark .admin-content :deep(.v-card[class*="admin-ozet__"]) {
+  background: rgb(var(--v-theme-primary) / 0.55) !important;
+  border: 1px solid rgba(255, 255, 255, 0.15) !important;
+  box-shadow: 0 4px 20px rgb(0 0 0 / 0.4) !important;
+}
+.v-theme--light .admin-content :deep(.v-card[class*="admin-ozet__"]) {
+  border: 1px solid rgba(0, 0, 0, 0.15) !important;
 }
 
 .admin-content :deep(.v-card:hover) {

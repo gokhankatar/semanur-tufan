@@ -1,4 +1,7 @@
 <script setup lang="ts">
+const route = useRoute();
+const isAdminRoute = computed(() => route.path.startsWith("/admin"));
+
 const config = useRuntimeConfig();
 const siteUrl = (config.public.siteUrl as string) || "https://semanur-tufan.vercel.app";
 
@@ -62,14 +65,19 @@ useHead({
 </script>
 
 <template>
-  <v-app>
-    <v-container class="main-container">
+  <v-app :class="{ 'admin-route': isAdminRoute }">
+    <v-container v-if="!isAdminRoute" class="main-container">
       <NuxtLayout />
     </v-container>
+    <NuxtLayout v-else :key="'admin'" />
   </v-app>
 </template>
 
 <style>
+html, body {
+  width: 100%;
+  max-width: 100%;
+}
 html {
   scroll-behavior: smooth;
 }
@@ -123,4 +131,28 @@ html {
     padding: 0 1rem 1rem 1rem;
   }
 }
+
+/* Admin rotasında TAM GENİŞLİK */
+.v-application.admin-route {
+  width: 100% !important;
+  min-width: 100% !important;
+  max-width: none !important;
+}
+.v-application.admin-route .v-application__wrap {
+  width: 100% !important;
+  min-width: 100% !important;
+  max-width: none !important;
+  flex: 1 1 auto !important;
+}
+.v-application.admin-route .v-main,
+.v-application.admin-route .v-main__scroller,
+.v-application.admin-route .admin-main,
+.v-application.admin-route .admin-main-inner,
+.v-application.admin-route .admin-content {
+  width: 100% !important;
+  max-width: none !important;
+  min-width: 0 !important;
+  flex: 1 1 auto !important;
+}
+
 </style>

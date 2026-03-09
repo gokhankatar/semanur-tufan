@@ -107,6 +107,55 @@
         hide-details="auto"
         clearable
       />
+
+      <!-- Yorumlar -->
+      <div v-if="journal.comments?.length" class="mb-4">
+        <p class="text-body-small font-weight-medium mb-2">Yorumlar</p>
+        <div class="admin-dergi-yorumlar">
+          <div
+            v-for="c in journal.comments"
+            :key="c.id"
+            class="admin-dergi-yorum-item d-flex align-center justify-space-between ga-2 py-2"
+          >
+            <div class="flex-grow-1 min-width-0">
+              <span class="text-body-small font-weight-medium">{{ c.author_name }}</span>
+              <span class="text-caption text-medium-emphasis ml-2">{{ formatCommentDate(c.created_at) }}</span>
+              <p class="text-body-small mb-0 mt-1" style="white-space: pre-wrap">{{ c.comment_text }}</p>
+            </div>
+            <div class="d-flex align-center ga-1 flex-shrink-0">
+              <v-tooltip :text="c.visible ? 'Gizle' : 'Göster'">
+                <template #activator="{ props: tProps }">
+                  <v-btn
+                    v-bind="tProps"
+                    icon
+                    variant="text"
+                    size="small"
+                    :color="c.visible ? 'success' : 'default'"
+                    @click="toggleVisibility(c.id)"
+                  >
+                    <v-icon :icon="c.visible ? 'mdi-eye' : 'mdi-eye-off'" size="small" />
+                  </v-btn>
+                </template>
+              </v-tooltip>
+              <v-tooltip text="Sil">
+                <template #activator="{ props: tProps }">
+                  <v-btn
+                    v-bind="tProps"
+                    icon
+                    variant="text"
+                    size="small"
+                    color="error"
+                    @click="removeComment(c.id)"
+                  >
+                    <v-icon icon="mdi-delete" size="small" />
+                  </v-btn>
+                </template>
+              </v-tooltip>
+            </div>
+          </div>
+        </div>
+      </div>
+
       <v-alert v-if="error" type="error" class="mb-4" density="compact" closable @click:close="error = ''">
         {{ error }}
       </v-alert>
@@ -180,6 +229,42 @@ onBeforeUnmount(revokeCoverPreview)
 
 const rules = { required: (v: string | number) => !!v || 'Bu alan zorunludur' }
 
+const { toggleCommentVisibility, removeCommentFromJournal } = useJournalComments()
+
+const formatCommentDate = (iso: string) => {
+  if (!iso) return '—'
+  try {
+    return new Date(iso).toLocaleDateString('tr-TR', {
+      day: 'numeric',
+      month: 'short',
+      year: 'numeric',
+      hour: '2-digit',
+      minute: '2-digit',
+    })
+  } catch {
+    return '—'
+  }
+}
+
+const toggleVisibility = async (commentId: string) => {
+  if (!props.journal.id || !props.journal.comments) return
+  await toggleCommentVisibility(props.journal.id, props.journal.comments, commentId)
+  const idx = props.journal.comments.findIndex((c) => c.id === commentId)
+  const c = idx >= 0 ? props.journal.comments[idx] : undefined
+  if (c) {
+    c.visible = !c.visible
+  }
+}
+
+const removeComment = async (commentId: string) => {
+  if (!props.journal.id || !props.journal.comments) return
+  await removeCommentFromJournal(props.journal.id, props.journal.comments, commentId)
+  const idx = props.journal.comments.findIndex((c) => c.id === commentId)
+  if (idx >= 0) {
+    props.journal.comments.splice(idx, 1)
+  }
+}
+
 const handleSubmit = async () => {
   const { valid } = await formRef.value?.validate()
   if (!valid) return
@@ -234,5 +319,17 @@ const handleSubmit = async () => {
   object-fit: cover;
   border-radius: 8px;
   flex-shrink: 0;
+}
+
+.admin-dergi-yorumlar {
+  border: 1px solid rgb(var(--v-theme-primary) / 0.2);
+  border-radius: 12px;
+  padding: 0.5rem;
+}
+.admin-dergi-yorum-item {
+  border-bottom: 1px solid rgb(var(--v-theme-primary) / 0.1);
+}
+.admin-dergi-yorum-item:last-child {
+  border-bottom: none;
 }
 </style>

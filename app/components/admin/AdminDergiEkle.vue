@@ -72,8 +72,9 @@
       max-width="560"
       persistent
       transition="dialog-transition"
+      scrim="rgba(0,0,0,0.6)"
     >
-      <v-card variant="outlined" class="pa-4 pa-md-6 position-relative">
+      <v-card variant="elevated" class="admin-dialog-card pa-4 pa-md-6 position-relative">
         <v-overlay
           :model-value="loading"
           contained
@@ -525,5 +526,11 @@ const handleSubmitDetails = async () => {
   display: flex;
   flex-direction: column;
   min-width: 0;
+}
+
+/* Dergi bilgileri popup - arka plan ve scrim */
+.admin-dialog-card {
+  background: rgb(var(--v-theme-surface)) !important;
+  border: none !important;
 }
 </style>

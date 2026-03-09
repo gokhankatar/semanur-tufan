@@ -60,7 +60,23 @@
           <template #prepend>🎨</template>
         </v-chip>
       </div>
+      <v-btn
+        class="home-hero__eser-btn mt-4"
+        color="primary"
+        variant="elevated"
+        prepend-icon="mdi-file-document-edit-outline"
+        text="Eser Gönder"
+        size="large"
+        rounded="xl"
+        @click="eserDialog = true"
+      />
     </div>
+
+    <CommonEserGonderDialog v-model="eserDialog" @submitted="onEserSubmitted" />
+
+    <v-snackbar v-model="eserSnackbar" color="success" :timeout="4000" location="bottom" rounded="lg">
+      Eseriniz başarıyla gönderildi. Teşekkür ederiz!
+    </v-snackbar>
 
     <a href="#dergiler" class="home-hero__scroll">
       <span class="home-hero__scroll-text">Keşfet</span>
@@ -78,6 +94,12 @@ import { animate, stagger } from "animejs";
 const display = useDisplay();
 const config = useRuntimeConfig();
 const titleRef = ref<HTMLElement | null>(null);
+const eserDialog = ref(false);
+
+const eserSnackbar = ref(false);
+const onEserSubmitted = () => {
+  eserSnackbar.value = true;
+};
 const titleChars1 = "Gökgerdan".split("");
 const titleChars2 = "Dergisi".split("");
 
@@ -365,6 +387,14 @@ onMounted(() => {
 
 .home-hero__chips {
   gap: 1rem;
+}
+
+.home-hero__eser-btn {
+  box-shadow: 0 4px 20px rgb(var(--v-theme-primary) / 0.35);
+}
+
+.home-hero__eser-btn:hover {
+  box-shadow: 0 6px 28px rgb(var(--v-theme-primary) / 0.45);
 }
 
 .home-hero__scroll {

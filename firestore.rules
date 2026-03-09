@@ -39,5 +39,15 @@ service cloud.firestore {
       allow create: if true;
       allow read, update, delete: if request.auth != null;
     }
+    // Eser talepleri - Herkes gönderebilir (create), sadece admin görür/siler
+    match /incoming_artwork_requests/{requestId} {
+      allow create: if true;
+      allow read, update, delete: if request.auth != null;
+    }
+    // Dergi yorumları - Herkes gönderebilir (create), sadece admin görür/siler
+    match /incoming_comments/{commentId} {
+      allow create: if true;
+      allow read, update, delete: if request.auth != null;
+    }
   }
 }
