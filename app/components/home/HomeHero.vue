@@ -16,7 +16,11 @@
     </div>
 
     <div class="home-hero__content">
-      <h1 ref="titleRef" class="home-hero__title">
+      <h1
+        ref="titleRef"
+        class="home-hero__title"
+        :class="titleClass"
+      >
         <span class="home-hero__title-text">
           <span v-for="(char, i) in titleChars1" :key="'1-' + i" class="home-hero__char">{{ char }}</span>
         </span>
@@ -102,6 +106,15 @@ const onEserSubmitted = () => {
 };
 const titleChars1 = "Gökgerdan".split("");
 const titleChars2 = "Dergisi".split("");
+
+const titleClass = computed(() => {
+  if (display.xxl.value) return "home-hero__title--xxl";
+  if (display.xl.value) return "home-hero__title--xl";
+  if (display.lg.value) return "home-hero__title--lg";
+  if (display.md.value) return "home-hero__title--md";
+  if (display.sm.value) return "home-hero__title--sm";
+  return "home-hero__title--xs";
+});
 
 onMounted(() => {
   if (!titleRef.value) return;
@@ -336,16 +349,25 @@ onMounted(() => {
 }
 
 .home-hero__title {
-  font-size: clamp(2.75rem, 9vw, 5rem);
   font-weight: 800;
   letter-spacing: -0.04em;
   line-height: 1.15;
   margin: 0 0 0.75rem 0;
   display: flex;
-  flex-direction: column;
+  flex-direction: row;
+  flex-wrap: nowrap;
   align-items: center;
-  gap: 0.1em;
+  justify-content: center;
+  gap: 0.25em;
 }
+
+/* Breakpoint'e göre font-size – değerleri ihtiyacına göre değiştirebilirsin */
+.home-hero__title--xs { font-size: 2.25rem; }
+.home-hero__title--sm { font-size: 2.75rem; }
+.home-hero__title--md { font-size: 3.5rem; }
+.home-hero__title--lg { font-size: 4rem; }
+.home-hero__title--xl { font-size: 4.5rem; }
+.home-hero__title--xxl { font-size: 5rem; }
 
 .home-hero__title-text {
   display: inline-flex;
