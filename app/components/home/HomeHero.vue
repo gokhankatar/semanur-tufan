@@ -74,6 +74,11 @@
         rounded="xl"
         @click="eserDialog = true"
       />
+      <div class="home-hero__anchors mt-3 d-flex flex-wrap align-center justify-center ga-2 ga-sm-3">
+        <a href="#hakkimizda" class="home-hero__anchor-link">Hakkımızda</a>
+        <span class="home-hero__anchors-sep" aria-hidden="true">·</span>
+        <a href="#dergiler" class="home-hero__anchor-link">Dergiler</a>
+      </div>
     </div>
 
     <CommonEserGonderDialog v-model="eserDialog" @submitted="onEserSubmitted" />
@@ -82,7 +87,7 @@
       Eseriniz başarıyla gönderildi. Teşekkür ederiz!
     </v-snackbar>
 
-    <a href="#dergiler" class="home-hero__scroll">
+    <a href="#hakkimizda" class="home-hero__scroll">
       <span class="home-hero__scroll-text">Keşfet</span>
       <div class="home-hero__scroll-mouse">
         <div class="home-hero__scroll-wheel" />
@@ -417,6 +422,29 @@ onMounted(() => {
 
 .home-hero__eser-btn:hover {
   box-shadow: 0 6px 28px rgb(var(--v-theme-primary) / 0.45);
+}
+
+.home-hero__anchors {
+  font-size: 0.875rem;
+}
+
+.home-hero__anchors-sep {
+  opacity: 0.45;
+  user-select: none;
+}
+
+.home-hero__anchor-link {
+  color: rgb(var(--v-theme-on-background) / 0.75);
+  text-decoration: none;
+  font-weight: 600;
+  letter-spacing: 0.02em;
+  border-bottom: 1px solid transparent;
+  transition: color 0.2s, border-color 0.2s;
+}
+
+.home-hero__anchor-link:hover {
+  color: rgb(var(--v-theme-primary));
+  border-bottom-color: rgb(var(--v-theme-primary) / 0.5);
 }
 
 .home-hero__scroll {

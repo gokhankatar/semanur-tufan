@@ -11,6 +11,7 @@ export default defineEventHandler((event) => {
     { url: "/dergiler", changefreq: "weekly", priority: 0.9 },
     { url: "/bloglar", changefreq: "weekly", priority: 0.9 },
     { url: "/calismalar", changefreq: "weekly", priority: 0.9 },
+    { url: "/hakkimizda", changefreq: "monthly", priority: 0.85 },
     { url: "/abone-ol", changefreq: "monthly", priority: 0.7 },
   ];
 

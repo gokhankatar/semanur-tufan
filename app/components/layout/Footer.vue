@@ -39,6 +39,8 @@
         />
       </div>
       <div class="site-footer__copy d-flex align-center justify-center flex-wrap ga-2">
+        <NuxtLink to="/#hakkimizda" class="site-footer__link">Hakkımızda</NuxtLink>
+        <span>·</span>
         <NuxtLink to="#iletisim" class="site-footer__link">İletişim</NuxtLink>
         <span>·</span>
         <span>{{ config.public.adminEmail }} · © {{ new Date().getFullYear() }} Gökgerdan Dergisi</span>

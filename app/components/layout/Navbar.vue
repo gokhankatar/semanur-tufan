@@ -15,10 +15,18 @@
           <NuxtLink
             to="/"
             class="navbar__nav-link"
-            :class="{ 'navbar__nav-link--active': route.path === '/' }"
+            :class="{ 'navbar__nav-link--active': route.path === '/' && route.hash !== '#hakkimizda' }"
           >
             <v-icon icon="mdi-home" size="small" />
             <span>Anasayfa</span>
+          </NuxtLink>
+          <NuxtLink
+            to="/#hakkimizda"
+            class="navbar__nav-link"
+            :class="{ 'navbar__nav-link--active': isHakkimizdaNavActive }"
+          >
+            <v-icon icon="mdi-information-variant" size="small" />
+            <span>Hakkımızda</span>
           </NuxtLink>
           <NuxtLink
             to="/dergiler"
@@ -123,11 +131,20 @@
               <NuxtLink
                 to="/"
                 class="mobile-menu__link"
-                :class="{ 'mobile-menu__link--active': route.path === '/' }"
+                :class="{ 'mobile-menu__link--active': route.path === '/' && route.hash !== '#hakkimizda' }"
                 @click="mobileMenuOpen = false"
               >
                 <v-icon icon="mdi-home" size="large" />
                 <span>Anasayfa</span>
+              </NuxtLink>
+              <NuxtLink
+                to="/#hakkimizda"
+                class="mobile-menu__link"
+                :class="{ 'mobile-menu__link--active': isHakkimizdaNavActive }"
+                @click="mobileMenuOpen = false"
+              >
+                <v-icon icon="mdi-information-variant" size="large" />
+                <span>Hakkımızda</span>
               </NuxtLink>
               <NuxtLink
                 to="/dergiler"
@@ -185,6 +202,10 @@ const route = useRoute();
 const theme = useTheme();
 const mobileMenuOpen = ref(false);
 const isScrolled = ref(false);
+
+const isHakkimizdaNavActive = computed(
+  () => route.path.startsWith("/hakkimizda") || (route.path === "/" && route.hash === "#hakkimizda")
+);
 
 const isDark = computed(() => theme.global.current.value.dark);
 

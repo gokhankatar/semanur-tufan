@@ -1,6 +1,60 @@
 <template>
   <HomeHero />
 
+  <section id="hakkimizda" class="home-about-teaser pa-4 pa-md-8" tabindex="-1">
+    <div class="home-about-teaser__inner">
+      <div class="home-about-teaser__head text-center">
+        <div class="home-about-teaser__title-row">
+          <span class="home-about-teaser__icon-wrap" aria-hidden="true">
+            <v-icon icon="mdi-information-variant" size="22" class="home-about-teaser__icon" />
+          </span>
+          <h2 class="home-about-teaser__title">Hakkımızda</h2>
+        </div>
+        <div
+          class="home-about-teaser__chips d-flex flex-wrap align-center justify-center ga-2 mb-3"
+          role="list"
+          aria-label="Dergi vizyonu"
+        >
+          <v-chip
+            v-for="p in aboutPillars"
+            :key="p.label"
+            role="listitem"
+            :prepend-icon="p.icon"
+            variant="tonal"
+            color="primary"
+            size="small"
+            density="comfortable"
+            class="home-about-teaser__chip"
+            rounded="pill"
+          >
+            {{ p.label }}
+          </v-chip>
+        </div>
+        <p class="text-body-2 text-medium-emphasis mx-auto home-about-teaser__intro">
+          Bu dört ilke üzerinde okuyucuyla buluşuyoruz. Editörden bir selam ve derginin ruhunu tam metinde
+          okuyabilirsiniz.
+        </p>
+      </div>
+
+      <div class="home-about-teaser__divider" aria-hidden="true" />
+
+      <div class="home-about-teaser__actions">
+        <NuxtLink to="/hakkimizda" class="home-about-teaser__cta home-about-teaser__cta--primary">
+          <v-icon icon="mdi-book-open-page-variant" size="20" class="home-about-teaser__cta-ico" />
+          <span class="home-about-teaser__cta-text">
+            <span class="home-about-teaser__cta-line">Tam metni oku</span>
+            <span class="home-about-teaser__cta-hint">Editör mektubu</span>
+          </span>
+          <v-icon icon="mdi-chevron-right" size="20" class="home-about-teaser__cta-arrow" />
+        </NuxtLink>
+        <NuxtLink to="/dergiler" class="home-about-teaser__cta home-about-teaser__cta--secondary">
+          <v-icon icon="mdi-book-open-variant" size="18" class="home-about-teaser__cta-ico" />
+          <span>Dergilere geç</span>
+        </NuxtLink>
+      </div>
+    </div>
+  </section>
+
   <section id="dergiler" class="pa-4 pa-md-6">
     <HomeDergilerSectionHeader
       :count="journals.length"
@@ -187,6 +241,13 @@ useHead({ title: "" });
 
 const HOME_MAX_ITEMS = 8;
 
+const aboutPillars = [
+  { label: "Orijinal", icon: "mdi-star-four-points" },
+  { label: "Kalbe dokunan", icon: "mdi-heart-pulse" },
+  { label: "İlham veren", icon: "mdi-weather-sunset" },
+  { label: "Faydalı", icon: "mdi-hand-heart-outline" },
+] as const;
+
 const { fetchJournals } = useJournals();
 const { fetchBlogs } = useBlogs();
 const { fetchWorks } = useWorks();
@@ -331,5 +392,256 @@ onMounted(async () => {
 .work-skeleton {
   border-radius: 16px;
   overflow: hidden;
+}
+
+/* Hero altı — #hakkimizda anchor (navbar / footer / #hakkimizda) */
+.home-about-teaser {
+  scroll-margin-top: 5.5rem;
+  max-width: 720px;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+.home-about-teaser__inner {
+  position: relative;
+  padding: 1.5rem 1.25rem 1.35rem;
+  border-radius: 20px;
+  border: 1px solid rgb(var(--v-theme-primary) / 0.18);
+  background: linear-gradient(
+    160deg,
+    rgb(var(--v-theme-primary) / 0.08) 0%,
+    rgb(var(--v-theme-surface) / 0.65) 38%,
+    rgb(var(--v-theme-surface) / 0.4) 100%
+  );
+  box-shadow:
+    0 1px 0 rgb(255 255 255 / 0.06) inset,
+    0 20px 48px rgb(0 0 0 / 0.14);
+  overflow: hidden;
+}
+
+.home-about-teaser__inner::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 12%;
+  right: 12%;
+  height: 2px;
+  border-radius: 0 0 4px 4px;
+  background: linear-gradient(
+    90deg,
+    transparent,
+    rgb(var(--v-theme-primary) / 0.75),
+    transparent
+  );
+  pointer-events: none;
+}
+
+.v-theme--light .home-about-teaser__inner {
+  background: linear-gradient(
+    165deg,
+    rgb(var(--v-theme-primary) / 0.07) 0%,
+    rgb(255 255 255 / 0.92) 45%,
+    rgb(255 255 255 / 0.75) 100%
+  );
+  box-shadow:
+    0 1px 0 rgb(255 255 255 / 0.9) inset,
+    0 16px 40px rgb(49 86 250 / 0.07);
+  border-color: rgb(var(--v-theme-primary) / 0.14);
+}
+
+.home-about-teaser__title-row {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.65rem;
+  margin-bottom: 0.75rem;
+}
+
+.home-about-teaser__icon-wrap {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 44px;
+  height: 44px;
+  border-radius: 14px;
+  background: rgb(var(--v-theme-primary) / 0.12);
+  border: 1px solid rgb(var(--v-theme-primary) / 0.22);
+  box-shadow: 0 4px 14px rgb(var(--v-theme-primary) / 0.12);
+}
+
+.home-about-teaser__icon {
+  color: rgb(var(--v-theme-primary));
+}
+
+.home-about-teaser__title {
+  margin: 0;
+  font-size: clamp(1.25rem, 2.5vw, 1.5rem);
+  font-weight: 700;
+  letter-spacing: -0.02em;
+  line-height: 1.2;
+  color: rgb(var(--v-theme-on-surface));
+}
+
+.home-about-teaser__intro {
+  max-width: 32rem;
+  line-height: 1.6;
+  margin-bottom: 0;
+}
+
+.home-about-teaser__chip {
+  font-weight: 600;
+  font-size: 0.8125rem;
+  letter-spacing: 0.01em;
+  border: 1px solid rgb(var(--v-theme-primary) / 0.2) !important;
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.home-about-teaser__chip:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 4px 14px rgb(var(--v-theme-primary) / 0.15);
+}
+
+.home-about-teaser__divider {
+  height: 1px;
+  margin: 1.15rem 0 1rem;
+  background: linear-gradient(
+    90deg,
+    transparent,
+    rgb(var(--v-theme-on-surface) / 0.12) 20%,
+    rgb(var(--v-theme-on-surface) / 0.12) 80%,
+    transparent
+  );
+}
+
+.home-about-teaser__actions {
+  display: flex;
+  flex-direction: column;
+  align-items: stretch;
+  gap: 0.65rem;
+}
+
+@media (min-width: 480px) {
+  .home-about-teaser__actions {
+    flex-direction: row;
+    align-items: center;
+    justify-content: center;
+    flex-wrap: wrap;
+    gap: 0.75rem;
+  }
+}
+
+.home-about-teaser__cta {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  text-decoration: none;
+  border-radius: 12px;
+  transition: transform 0.2s ease, box-shadow 0.2s ease, border-color 0.2s ease, background 0.2s ease;
+}
+
+.home-about-teaser__cta:focus-visible {
+  outline: 2px solid rgb(var(--v-theme-primary));
+  outline-offset: 2px;
+}
+
+.home-about-teaser__cta--primary {
+  flex: 1;
+  min-width: 0;
+  padding: 0.65rem 1rem 0.65rem 0.85rem;
+  border: 1px solid rgb(var(--v-theme-primary) / 0.45);
+  background: linear-gradient(
+    135deg,
+    rgb(var(--v-theme-primary) / 0.22) 0%,
+    rgb(var(--v-theme-primary) / 0.06) 100%
+  );
+  color: rgb(var(--v-theme-on-surface));
+  box-shadow: 0 4px 16px rgb(0 0 0 / 0.1);
+}
+
+.v-theme--light .home-about-teaser__cta--primary {
+  background: linear-gradient(
+    135deg,
+    rgb(var(--v-theme-primary) / 0.2) 0%,
+    rgb(var(--v-theme-primary) / 0.05) 100%
+  );
+  box-shadow: 0 4px 18px rgb(49 86 250 / 0.1);
+}
+
+.home-about-teaser__cta--primary:hover {
+  transform: translateY(-1px);
+  border-color: rgb(var(--v-theme-primary) / 0.65);
+  box-shadow: 0 8px 24px rgb(var(--v-theme-primary) / 0.18);
+}
+
+.home-about-teaser__cta-text {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  text-align: left;
+  flex: 1;
+  min-width: 0;
+}
+
+.home-about-teaser__cta-line {
+  font-size: 0.9375rem;
+  font-weight: 700;
+  letter-spacing: 0.01em;
+  line-height: 1.25;
+}
+
+.home-about-teaser__cta-hint {
+  font-size: 0.75rem;
+  font-weight: 500;
+  opacity: 0.72;
+  margin-top: 0.1rem;
+}
+
+.home-about-teaser__cta-ico {
+  flex-shrink: 0;
+  color: rgb(var(--v-theme-primary));
+}
+
+.home-about-teaser__cta-arrow {
+  flex-shrink: 0;
+  color: rgb(var(--v-theme-primary));
+  opacity: 0.85;
+  margin-left: auto;
+}
+
+.home-about-teaser__cta--secondary {
+  padding: 0.5rem 0.9rem;
+  font-size: 0.8125rem;
+  font-weight: 600;
+  color: rgb(var(--v-theme-on-surface) / 0.85);
+  border: 1px solid rgb(var(--v-theme-on-surface) / 0.12);
+  background: rgb(var(--v-theme-surface) / 0.35);
+}
+
+.home-about-teaser__cta--secondary:hover {
+  transform: translateY(-1px);
+  border-color: rgb(var(--v-theme-primary) / 0.35);
+  color: rgb(var(--v-theme-primary));
+  background: rgb(var(--v-theme-primary) / 0.06);
+}
+
+.home-about-teaser__cta--secondary .home-about-teaser__cta-ico {
+  opacity: 0.75;
+}
+
+.home-about-teaser__cta--secondary:hover .home-about-teaser__cta-ico {
+  opacity: 1;
+  color: rgb(var(--v-theme-primary));
+}
+
+@media (min-width: 480px) {
+  .home-about-teaser__cta--primary {
+    flex: 1 1 auto;
+    max-width: 280px;
+  }
+
+  .home-about-teaser__cta--secondary {
+    flex: 0 0 auto;
+  }
 }
 </style>
